@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------------
 #
 #   File:       doitGROMACS.sh          
-#   Version:    V1.6                                                    
-#   Update:     08.06.15                                                  
+#   Version:    V1.8                                                    
+#   Update:     30.10.15                                                  
 #
 #   Copyright:  (c) Francesco Carbone, UCL, 2015
 #   Author:     Francesco Carbone, UCL                                    
@@ -21,24 +21,22 @@
 #   Decription:
 #   Che fa?
 #
-#   --- doitgromacs-v.1.6
-#       |--- INSTALL: useless file
-#       |--- doitGROMACS_default.config: file containing "user dependable" 
-#                                        variables. This file will be copied in
-#                                        the working directory, where the user
-#                                        is advise to check and edit it.
-#       |--- Makefile: used to add the paths to the required binaries to the 
-#                      configuration file.
-#       |--- doitGROMACS.sh: main script
-#       |--- doitGROMACS_functions  : file containing all the functions definition
-#       |--- doiRGROMACS.R : R script used by the ggplot function to plot.
-#       |--- doiRfunctions.R : R script containing the functions used by doiRGROMACS.R
-#       |--- sas_mean.R :
-#       |--- hb_mean.R :
-#       |--- mdp_examples/ : directory containing examples of paramenters files
-#                            used by gromacs to run simulations.
+#   doitgromacs-v.1.8
+#     |-- doitGROMACS_default.config: file containing user-dependable 
+#     |          variables used by doitGROMACS.sh. 
+#     |          This file will be copied in the working 
+#     |                                .
+#     |-- Makefile: used to add the paths to the required binaries to the 
+#     |               configuration file.
+#     |-- functions
+#       |-- doitGROMACS.sh: main script
+#       |-- doitGROMACS_functions  : file containing all the functions definition
+#       |-- doiRGROMACS.R : R script used by the ggplot function to plot.
+#       |-- doiRfunctions.R : R script containing the functions used by doiRGROMACS.R
+#       |-- sas_mean.R :
+#       |-- hb_mean.R :
 #             
-#       PLANNED UPGRADES: - Comparison in R
+#   PLANNED UPGRADES: - Comparison in R
 #
 #------------------------------------------------------------------------------
 #
@@ -59,19 +57,19 @@
 
 #---------------------------- The program begins here --------------------------
 
-# set the directory from which the scripts are run
+# set the working directories
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 FUNCTIONS_BIN="$DIR/functions"
-optionRprog="$FUNCTIONS/doitRGROMACS.R"
-
-#today=$(date +%a-%d-%b' %T')
+optionRprog="$FUNCTIONS_BIN/doitRGROMACS.R"
 
 # source all the functions definition
 source $FUNCTIONS_BIN/doitGROMACS_errorsHandling.sh
-source $FUNCTIONS_BIN/doitGROMACS_flagsCheckers.sh
+source $FUNCTIONS_BIN/doitGROMACS_routines.sh
 source $FUNCTIONS_BIN/doitGROMACS_messages.sh
 source $FUNCTIONS_BIN/doitGROMACS_equilib.sh
 source $FUNCTIONS_BIN/doitGROMACS_analyses.sh
+source $FUNCTIONS_BIN/doitGROMACS_Rcalls.sh
+source $FUNCTIONS_BIN/doitGROMACS_extra.sh
 
 while getopts "hgzb:n:t:s:f:c:e:" opt; do
  case $opt in
@@ -88,7 +86,6 @@ while getopts "hgzb:n:t:s:f:c:e:" opt; do
     \?) helpMessage;  exit  ;;
  esac
 done
-# if echo $* | grep -e "-g" -q; then
 
 # if -u exists call unres(), otherwise execute gromacs
 if [ -n "${unres}" ]; then

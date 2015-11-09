@@ -7,10 +7,10 @@ function SIGINT_handler {
     # 130 is the exit status from Ctrl-C/SIGINT                                 
     exit 130                                                                    
 }                                                                               
-                                                                                
-function exit_handler {                                                         
+
+function exit_handler {     
     echo "... Script Exiting!"                                                       
-}                                                                               
+}                                                                              
                                                                                 
 checkExitCode() {                                                               
   exitvalue=$?

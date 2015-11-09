@@ -162,39 +162,52 @@ gromPCA() {
 #------------
 # description : The name says everything
 # requirements: .tpr + .xtc
-gromSAS() {
-   # if -s and -f are not set prompt and exit
-   checkFlags_t
-   # create the directory
-   if [ ! -d ./sas_$name1 ] ; then
-      mkdir sas_$name1
-   fi
-   cd sas_$name1
+# NOTE: USES A BIGGER PROBE
+gromSAS() {   
+  # if -s and -f are not set prompt and exit
+  checkFlags_t
+  # create the directory
+  if [ ! -d ./sas_$name1 ] ; then
+     mkdir sas_$name1
+  fi
+  cd sas_$name1
+  if [ -n "${gromacs_ver}" ]; then    # if gromacs 5
+    $groPATH/$g_sas -s ../$tpr -f ../$trj -n ../$name1.ndx    \ 
+      -o $name1"_area.xvg" -or $name1"_resarea.xvg" -dt $optionDTsas   \
+      -b $optionSTARTime  -probe $optionPROBE -surface Protein -output Protein
+  else
    (echo "Protein"; echo "$optionSAS") | $groPATH/$g_sas -s ../$tpr -f ../$trj  \
       -o $name1"_area.xvg" -or $name1"_resarea.xvg"    \
       -dt $optionDTsas -b $optionSTARTime -probe $optionPROBE || checkExitCode
    # probe 0.7 nm perchè 16A -> 1.6 nm -> raggio 0.7 nm
-   cd ..
+  fi 
+  cd ..
 } &> >(tee doitgromacs_sas.log) >&2
 
 gromSAS-sites() {
   # if -s and -f are not set prompt and exit
-  checkFlags_t; indexCreator
-   # create the directory
-   if [ ! -d ./sas_sites_$name1 ] ; then
-      mkdir sas_sites_$name1
-   fi
-   cd sas_sites_$name1
-   (echo "Protein"; echo "G6P") | $groPATH/$g_sas -s ../$tpr -f ../$trj -n ../$name1.ndx    \
+  checkFlags_t;
+  # create the directory
+  if [ ! -d ./sas_$name1 ] ; then
+     mkdir sas_$name1
+  fi
+  cd sas_$name1
+  if [ -n "${gromacs_ver}" ]; then    # if gromacs 5
+    (echo "G6P"; echo "Coenzyme", echo "strNADPplus" ) | $groPATH/$g_sas      \
+      -s ../$tpr -f ../$trj -n ../$name1.ndx -o $name1"_area_sites.xvg"       \
+      -or $name1"_resarea_sites.xvg" -dt $optionDTsas -b $optionSTARTime      \
+      -surface Protein -output 
+  else
+    (echo "Protein"; echo "G6P") | $groPATH/$g_sas -s ../$tpr -f ../$trj -n ../$name1.ndx    \
       -o $name1"_g6p_area.xvg" -or $name1"_g6p_resarea.xvg" -dt $optionDTsas   \
-       -b $optionSTARTime  || checkExitCode 
-   (echo "Protein"; echo "Co-enzyme") | $groPATH/$g_sas -s ../$tpr -f ../$trj  \
+      -b $optionSTARTime  || checkExitCode 
+    (echo "Protein"; echo "Co-enzyme") | $groPATH/$g_sas -s ../$tpr -f ../$trj  \
       -n ../$name1.ndx -o $name1"_coenzyme_area.xvg" -b $optionSTARTime        \
       -or $name1"_coenzyme_resarea.xvg" -dt $optionDTsas || checkExitCode
-  (echo "Protein"; echo "strNADP+") | $groPATH/$g_sas -s ../$tpr -f ../$trj    \
-    -n ../$name1.ndx -o $name1"_strNADP+_area.xvg"  -b $optionSTARTime         \
-    -or $name1"_strNADPH_resarea.xvg" -dt $optionDTsas || checkExitCode
-   cd ..
+    (echo "Protein"; echo "strNADP+") | $groPATH/$g_sas -s ../$tpr -f ../$trj    \
+      -n ../$name1.ndx -o $name1"_strNADP+_area.xvg"  -b $optionSTARTime         \
+      -or $name1"_strNADPH_resarea.xvg" -dt $optionDTsas || checkExitCode
+  fi ; cd ..
 } &> >(tee doitgromacs_sasites.log) >&2
 
 #-------

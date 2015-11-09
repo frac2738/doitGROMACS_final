@@ -34,7 +34,7 @@ helpMessage() {
     Option   Type     Value       Description                                   
     --------------------------------------------------------------------------- 
     -[no]h   bool     yes         Print help info                               
-    -u       string   txt file    Analyses of an unres trajectory               
+#    -u       string   txt file    Analyses of an unres trajectory               
     -g       bool     bool        Set gromacs 5 syntax                          
                                                                                 
                                           [ALWAYS REQUIRED in absence of -u]    
@@ -82,10 +82,12 @@ doitOptions() {
         sas           - SAS analysis                                            
         sas-sites     - SAS analysis on only the binding sites                  
         hb            - Hydrogen bonds analysis [not yet implemented]           
-        hb-sites      - Hydrogen bonds analysis on binding sites                
-        meansas       - calculate the mean of the sas values                    
-        meanhb        - calculate the mean of the hydrogen bond values          
-        indexCreator  - Create binding sites index for the mutant               
+        hb-sites      - Hydrogen bonds analysis on binding sites 
+        indexCreator  - Create binding sites index for the mutant       
+               
+
+        mean          - calculate the mean of the sas values                    
+        mean_plus     - calculate the mean of the hydrogen bond values                  
         modvim+       - replace "@" with "#" in a file                          
         catomain      - rebuild a full atoms structure from CA structure        
         split_states  - given an unres trj extract all the frames and convert   

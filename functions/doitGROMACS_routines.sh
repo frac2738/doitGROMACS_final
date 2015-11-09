@@ -36,7 +36,8 @@ modVim() {
   sed -i 's/@/#/g' "$1" # -i modify and save                                    
 }                                                                               
                                                                                 
-modVim_plus() {                                                                 
+modVim_plus() {   
+  ls                                                              
   read -e -p "che file vuoi? " file1                                            
   modVim $file1                                                                 
 }                                                                                     
@@ -45,7 +46,7 @@ checkFlags() {
   # check the definition of -b and -n                                           
   if [[ -z "${cpu+x}" || -z "${name1+x}" ]]; then                               
     helpMessage                                                                 
-    error_exit "Execution halted! the script was called without any flags."     
+    error_exit "Execution halted! Both -b and -n flags are required."     
   fi                                                                            
 }                                                                               
                                                                                 
@@ -66,4 +67,13 @@ checkFlags_energy() {
     helpMessage; error_exit " execution halted: an energy file is required (-e)"
   fi                                                                            
 }  
+
+indexCreator() {                                                                
+  # create a index group specific for the glucose binding site in G6PD          
+  (echo "$option1"; echo "name 18 $option1name"; echo "q") | make_ndx -f $nameprod.gro -o $name1.ndx
+  # create a index group specific for the Co-enzyme binding site in G6PD        
+  (echo "$option2"; echo "name 19 $option2name"; echo "q") | make_ndx -f $nameprod.gro -n $name1.ndx -o $name1.ndx
+  # create a index group specific for the structural NADPH+ binding site in G6PD
+  (echo "$option3"; echo "name 20 $option3name"; echo "q") | make_ndx -f $nameprod.gro -n $name1.ndx -o $name1.ndx
+}      
 

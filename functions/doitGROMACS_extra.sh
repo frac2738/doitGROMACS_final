@@ -2,23 +2,26 @@
 
 # DESCRIPTION: Extra functions, 
 
-mean_sas() {
+mean_single() {
   ls && echo "select some files please: " &&  read -a FILES_ARRAY
   for i in "${FILES_ARRAY[@]}" ; do
     modVim $i
     # grep: avoid commented lines
     # awk: select 4th column and calculate the mean
-    grep -v '^#' $i | awk '{total += $4} END {print total/NR}'
+    grep -v '^#' $i | awk '{total += $2} END {print total/NR}'
   done
 }
 
-mean_hb() {
+mean_multi() {
   ls && echo "select some files please: " &&  read -a FILES_ARRAY
   for i in "${FILES_ARRAY[@]}" ; do
     modVim $i
     # grep: avoid commented lines
     # awk: select 2nd column and calculate the mean
     grep -v '^#' $i | awk '{total += $2} END {print total/NR}'
+    grep -v '^#' $i | awk '{total += $3} END {print total/NR}'
+    grep -v '^#' $i | awk '{total += $4} END {print total/NR}'
+    grep -v '^#' $i | awk '{total += $5} END {print total/NR}'
   done
 }
 

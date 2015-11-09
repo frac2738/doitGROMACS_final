@@ -32,7 +32,7 @@ inputs() {
   $groPATH/$genion -s input_ioni.tpr -p topology.top -o $name1"_ioni.pdb"      \
     -pname NA  -nname CL -np $optionIONSpos -nn $optionIONSneg  || checkExitCode
   # [-np] for positive and [-nn] for negative 
-} > >(tee doitgromacs_inputs.log) 2> >(tee doitgromacs_inputs.err >&2)
+} &> >(tee doitgromacs_inputs.log) >&2
 
 energy_minimization() {
   $groPATH/$grompp -f $minMDP -c $name1"_ioni.pdb" -p topology.top              \

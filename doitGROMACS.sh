@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------------
 #
 #   File:       doitGROMACS.sh          
-#   Version:    V1.8                                                    
-#   Update:     30.10.15                                                  
+#   Version:    V2.0                                                    
+#   Update:     5.11.15                                                  
 #
 #   Copyright:  (c) Francesco Carbone, UCL, 2015
 #   Author:     Francesco Carbone, UCL                                    
@@ -19,22 +19,19 @@
 #------------------------------------------------------------------------------
 #
 #   Decription:
-#   Che fa?
+#   Script that 
 #
-#   doitgromacs-v.1.8
+#   doitgromacs-v.2.0
 #     |-- doitGROMACS_default.config: file containing user-dependable 
-#     |          variables used by doitGROMACS.sh. 
-#     |          This file will be copied in the working 
+#     |                               variables used by doitGROMACS.sh. 
 #     |                                .
 #     |-- Makefile: used to add the paths to the required binaries to the 
-#     |               configuration file.
+#     |             configuration file.
 #     |-- functions
 #       |-- doitGROMACS.sh: main script
 #       |-- doitGROMACS_functions  : file containing all the functions definition
 #       |-- doiRGROMACS.R : R script used by the ggplot function to plot.
 #       |-- doiRfunctions.R : R script containing the functions used by doiRGROMACS.R
-#       |-- sas_mean.R :
-#       |-- hb_mean.R :
 #             
 #   PLANNED UPGRADES: - Comparison in R
 #
@@ -87,110 +84,105 @@ while getopts "hgzb:n:t:s:f:c:e:" opt; do
  esac
 done
 
-# if -u exists call unres(), otherwise execute gromacs
-if [ -n "${unres}" ]; then
-  unresAnalyses; exit;   
+checkFlags
+# check existance of CONFIG_FILE and source it or create a new one
+export CONFIG_FILE="$(find . -maxdepth 1 -name doitGROMACS.config)"
+# Source configuration file
+if [[ -f $CONFIG_FILE ]]; then
+  . $CONFIG_FILE ;
 else
-  checkFlags
-  # check existance of CONFIG_FILE and source it or create a new one
-  export CONFIG_FILE="$(find . -maxdepth 1 -name doitGROMACS.config)"
-  # Source configuration file
-  if [[ -f $CONFIG_FILE ]]; then
-    . $CONFIG_FILE ;
- else
-    echo "Configuration file not found, a new file will be created";
-    cp $DIR/doitGROMACS_default.config ./doitGROMACS.config
-    case $cpu in
-      acrm | emerald | lappy) 
-      make -f $DIR/Makefile $cpu
-      . doitGROMACS.config
-      echo "
+  echo "Configuration file not found, a new file will be created";
+  cp $DIR/doitGROMACS_default.config ./doitGROMACS.config
+  case $cpu in
+    acrm | emerald | lappy) 
+    make -f $DIR/Makefile $cpu
+    . doitGROMACS.config
+    echo "
 ------------------------------ executables found ----------------------------
 executables locations specific for $cpu have been written on doitGROMACS.conf
 -----------------------------------------------------------------------------
-      "	;;
-      *)	
-      make -f $DIR/Makefile standard
-      . doitGROMACS.config
-      echo "
+    "	;;
+    *)	
+    make -f $DIR/Makefile standard
+    . doitGROMACS.config
+    echo "
 ---------------------- no executables found ------------------------
 standard executables locations have been written on doitGROMACS.conf
 --------------------------------------------------------------------
-      "	;;
-    esac 
-  fi
-  # set the gromacs syntax (version 4 or 5)
-  setGROMACSbinaries
-  # list the options 
+    "	;;
+  esac 
+fi
+# set the gromacs syntax (version 4 or 5)
+setGROMACSbinaries
+# list the options 
+doitOptions
+# check the existance of the selected option 
+read -e -p "execute option  " choice
+case $choice in
+  all|emin|nvt|npt|h20|cond|rmsdfg|cluster|pca|sas|sas-sites|dssp|hb|hb-sites|ggplot|ggplot-bis|indexCreator|modvim+|mean|mean_multi)
+    if [ -z ${timens} ]; then
+      timens="X"
+      nameprod=${name1}_${timens}
+    else
+      nameprod=${name1}_${timens} 
+      fi ;;
+  catomain)
+    checkFlags_pdb; CAtoMAIN $pdb1  ;;
+  split_states)
+    checkFlags_pdb; split_states $pdb1  ;;
+  *)
   doitOptions
-  # check the existance of the selected option 
-  read -e -p "execute option  " choice
-  case $choice in
-    all|emin|nvt|npt|h20|cond|rmsdfg|cluster|pca|sas|sas-sites|dssp|hb|hb-sites|ggplot|ggplot-bis|indexCreator|modvim+|meansas|meanhb)
-      if [ -z ${timens} ]; then
-        timens="X"
-        nameprod=${name1}_${timens}
-      else
-        nameprod=${name1}_${timens} 
-        fi ;;
-    catomain)
-      checkFlags_pdb; CAtoMAIN $pdb1  ;;
-    split_states)
-      checkFlags_pdb; split_states $pdb1  ;;
-    *)
-    doitOptions
-    error_exit " line $LINENO, An error has occurred. Execution halted! choice '$choice' not recognised."  ;;
-  esac
+  error_exit " line $LINENO, An error has occurred. Execution halted! choice '$choice' not recognised."  ;;
+esac
 
-  case $choice in
-    all )
-      inputs && energy_minimization && nvt && npt  ;;
-    emin)
-      energy_minimization && nvt && npt   ;;
-    nvt)
-      nvt && npt  ;;
-    npt)
-      npt   ;;
-    h20)
-      clean_trj   ;;
-    cond) 
-      sim_conditions ;;
-    rmsdfg)
-      rmsdf ;;
-    cluster)
-      i=1
-      gromCLUSTER
-      # rewrite in a "repeat" function so I can use it also with option 10
-      read -e -p "Do you want to rerun the analysis with a different method? [yes/no] " ramen
-      while [ "$ramen" == "yes" ] 
-      do
-        repeatgromCLUSTER
-        i=$(($i+1))
-      done  ;;
-    pca)
-      gromPCA   ;;
-    sas)
-      gromSAS  ;;
-    sas-sites)
-      gromSAS-sites  ;;
-    dssp)
-      gromDSSP ;;
-    hb)
-      gromHB ;;         
-    hb-sites)
-      gromHB-sites ;;         
-    ggplot)
-        GGplot ;;
-    ggplot-bis) # hidden function
-      sim_conditions && rmsdf && gromDSSP && GGplot ;;
-    indexCreator)
-        indexCreator ;;
-    modvim+)
-        modVim_plus  ;;
-    meansas)
-        mean_sas  ;;
-    meanhb)
-        mean_hb  ;;
-  esac
-  fi
+case $choice in
+  all )
+    inputs && energy_minimization && nvt && npt  ;;
+  emin)
+    energy_minimization && nvt && npt   ;;
+  nvt)
+    nvt && npt  ;;
+  npt)
+    npt   ;;
+  h20)
+    clean_trj   ;;
+  cond) 
+    sim_conditions ;;
+  rmsdfg)
+    rmsdf ;;
+  cluster)
+    i=1
+    gromCLUSTER
+    # rewrite in a "repeat" function so I can use it also with option 10
+    read -e -p "Do you want to rerun the analysis with a different method? [yes/no] " ramen
+    while [ "$ramen" == "yes" ] 
+    do
+      repeatgromCLUSTER
+      i=$(($i+1))
+    done  ;;
+  pca)
+    gromPCA   ;;
+  sas)
+    gromSAS  ;;
+  sas-sites)
+    gromSAS-sites  ;;
+  dssp)
+    gromDSSP ;;
+  hb)
+    gromHB ;;         
+  hb-sites)
+    gromHB-sites ;;         
+  ggplot)
+      GGplot ;;
+  ggplot-bis) # hidden function
+    sim_conditions && rmsdf && gromDSSP && GGplot ;;
+  indexCreator)
+      indexCreator ;;
+  modvim+)
+      modVim_plus  ;;
+  mean)
+      mean_single  ;;
+  mean_multi)
+      mean_multi  ;;
+esac
 #----------------------------- The program ends here ---------------------------

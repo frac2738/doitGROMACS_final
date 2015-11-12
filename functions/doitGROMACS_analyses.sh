@@ -172,16 +172,17 @@ gromSAS() {
   fi
   cd sas_$name1
   if [ -n "${gromacs_ver}" ]; then    # if gromacs 5
-    $groPATH/$g_sas -s ../$tpr -f ../$trj -n ../$name1.ndx    \ 
-      -o $name1"_area.xvg" -or $name1"_resarea.xvg" -dt $optionDTsas   \
-      -b $optionSTARTime  -probe $optionPROBE -surface Protein -output Protein
+    $groPATH/$g_sas -s ../$tpr -f ../$trj -n ../$name1.ndx                    \
+    -o $name1"_area.xvg" -or $name1"_resarea.xvg" -dt $optionDTsas            \
+    -b $optionSTARTime  -probe $optionPROBE -surface Protein -output Protein
+  modVim $name1"_area.xvg" ; modVim $name1"_resarea.xvg"
   else
    (echo "Protein"; echo "$optionSAS") | $groPATH/$g_sas -s ../$tpr -f ../$trj  \
       -o $name1"_area.xvg" -or $name1"_resarea.xvg"    \
       -dt $optionDTsas -b $optionSTARTime -probe $optionPROBE || checkExitCode
    # probe 0.7 nm perchè 16A -> 1.6 nm -> raggio 0.7 nm
-  fi 
-  cd ..
+  modVim $name1"_area.xvg" ; modVim $name1"_resarea.xvg"
+  fi ; cd ..
 } &> >(tee doitgromacs_sas.log) >&2
 
 gromSAS-sites() {
@@ -197,16 +198,17 @@ gromSAS-sites() {
       -s ../$tpr -f ../$trj -n ../$name1.ndx -o $name1"_area_sites.xvg"       \
       -or $name1"_resarea_sites.xvg" -dt $optionDTsas -b $optionSTARTime      \
       -surface Protein -output 
+  modVim $name1"_area_sites.xvg" ; modVim $name1"_resarea_sites.xvg"
   else
-    (echo "Protein"; echo "G6P") | $groPATH/$g_sas -s ../$tpr -f ../$trj -n ../$name1.ndx    \
-      -o $name1"_g6p_area.xvg" -or $name1"_g6p_resarea.xvg" -dt $optionDTsas   \
+    (echo "Protein"; echo "G6P") | $groPATH/$g_sas -s ../$tpr -f ../$trj -n ../$name1.ndx \
+      -o $name1"_g6p_area.xvg" -or $name1"_g6p_resarea.xvg" -dt $optionDTsas              \
       -b $optionSTARTime  || checkExitCode 
-    (echo "Protein"; echo "Co-enzyme") | $groPATH/$g_sas -s ../$tpr -f ../$trj  \
-      -n ../$name1.ndx -o $name1"_coenzyme_area.xvg" -b $optionSTARTime        \
-      -or $name1"_coenzyme_resarea.xvg" -dt $optionDTsas || checkExitCode
-    (echo "Protein"; echo "strNADP+") | $groPATH/$g_sas -s ../$tpr -f ../$trj    \
-      -n ../$name1.ndx -o $name1"_strNADP+_area.xvg"  -b $optionSTARTime         \
-      -or $name1"_strNADPH_resarea.xvg" -dt $optionDTsas || checkExitCode
+    (echo "Protein"; echo "Coenzyme") | $groPATH/$g_sas -s ../$tpr -f ../$trj  \
+      -n ../$name1.ndx -o $name1"_Coenzyme_area.xvg" -b $optionSTARTime        \
+      -or $name1"_Coenzyme_resarea.xvg" -dt $optionDTsas || checkExitCode
+    (echo "Protein"; echo "strNADPplus") | $groPATH/$g_sas -s ../$tpr -f ../$trj  \
+      -n ../$name1.ndx -o $name1"_strNADPplus_area.xvg"  -b $optionSTARTime       \
+      -or $name1"_strNADPplus_resarea.xvg" -dt $optionDTsas || checkExitCode
   fi ; cd ..
 } &> >(tee doitgromacs_sasites.log) >&2
 
@@ -215,38 +217,44 @@ gromSAS-sites() {
 # requirements: .tpr + .xtc
 gromHB() {
   checkFlags_t
-   # create the directory
-   if [ ! -d ./hydrogenBonds_$name1 ] ; then
-      mkdir hydrogenBonds_$name1
-   fi
-   cd hydrogenBonds_$name1
+  # create the directory
+  if [ ! -d ./hydrogenBonds_$name1 ] ; then
+     mkdir hydrogenBonds_$name1
+  fi
+  cd hydrogenBonds_$name1
   (echo "$optionHB"; echo "$optionHB") | $groPATH/$g_hbond -s ../$tpr -f ../$trj\
-    -num $name1"_hb_count.xvg" -dist $name1"_hb_dist.xvg"                \
+    -num $name1"_hb_count.xvg" -dist $name1"_hb_dist.xvg"                     \
     -hbm $name1"_hb_matrix" -tu ps -dt $optionDThb -b $optionSTARTime 
+  modVim $name1"_hb_count.xvg" ; modVim $name1"_hb_dist.xvg"
+  cd ..
 } &> >(tee doitgromacs_hb.log) >&2
 
 #-------
 # description :
 # requirements: .tpr + .xtc
 gromHB-sites() {
-  checkFlags_t; indexCreator
-   # create the directory
-   if [ ! -d ./hydrogenBonds_$name1 ] ; then
-      mkdir hydrogenBonds_$name1
-   fi
-   cd hydrogenBonds_$name1
-  (echo "G6P"; echo "G6P") | $groPATH/$g_hbond -s ../$tpr   \
-    -f ../$trj -n ../$name1.ndx -tu ps -dt $optionDThb -b $optionSTARTime        \
-    -num $name1"_G6P_count.xvg" -dist $name1"_G6P_dist.xvg"        \
+  checkFlags_t;
+  # create the directory
+  if [ ! -d ./hydrogenBonds_$name1 ] ; then
+    mkdir hydrogenBonds_$name1
+  fi
+  cd hydrogenBonds_$name1
+  (echo "G6P"; echo "G6P") | $groPATH/$g_hbond -s ../$tpr                     \
+    -f ../$trj -n ../$name1.ndx -tu ps -dt $optionDThb -b $optionSTARTime     \
+    -num $name1"_G6P_count.xvg" -dist $name1"_G6P_dist.xvg"                   \
     -hbm $name1"_G6P_matrix" 
-  (echo "$Co-enzyme"; echo "$Co-enzyme") | $groPATH/$g_hbond -s ../$tpr   \
-    -f ../$trj -n ../$name1.ndx -tu ps -dt $optionDThb -b $optionSTARTime        \
-    -num $name1"_Co-enzyme_count.xvg" -dist $name1"_Co-enzyme_dist.xvg"        \
-    -hbm $name1"_Co-enzyme_matrix" 
-  (echo "strNADP+"; echo "strNADP+") | $groPATH/$g_hbond -s ../$tpr   \
-   -f ../$trj -n ../$name1.ndx -tu ps -dt $optionDThb -b $optionSTARTime        \
-  -num $name1"_strNADP+_count.xvg" -dist $name1"_strNADP+_dist.xvg"        \
-  -hbm $name1"_strNADP+_matrix"   
+  modVim $name1"_G6P_count.xvg" ; modVim $name1"_G6P_dist.xvg"
+  (echo "$Coenzyme"; echo "$Coenzyme") | $groPATH/$g_hbond -s ../$tpr         \
+    -f ../$trj -n ../$name1.ndx -tu ps -dt $optionDThb -b $optionSTARTime     \
+    -num $name1"_Coenzyme_count.xvg" -dist $name1"_Coenzyme_dist.xvg"         \
+    -hbm $name1"_Coenzyme_matrix" 
+  modVim $name1"_Coenzyme_count.xvg" ; modVim $name1"_Coenzyme_dist.xvg"
+  (echo "strNADPplus"; echo "strNADPplus") | $groPATH/$g_hbond -s ../$tpr     \
+   -f ../$trj -n ../$name1.ndx -tu ps -dt $optionDThb -b $optionSTARTime      \
+  -num $name1"_strNADPplus_count.xvg" -dist $name1"_strNADPplus_dist.xvg"     \
+  -hbm $name1"_strNADPplus_matrix"   
+  modVim $name1"_strNADPplus_count.xvg" ; modVim $name1"_strNADPplus_dist.xvg"
+  cd ..
 } &> >(tee doitgromacs_hbsites.log) >&2
 
 #---------
@@ -259,89 +267,4 @@ gromDSSP() {
     -sc $nameprod"_ss_count.xvg" -tu ps -dt $optionDTdssp -b $optionSTARTime  
   modVim $nameprod"_ss_count.xvg"
 } &> >(tee doitgromacs_dssp.log) >&2
-
-#-------
-GGplot() {
-  # function that calls the R script doitRGROMACS.R to plot in ggplot: 
-  # rmsd - gyration radius - rmsf - simulation conditions - structure analysis
-  if [[ -f $optionRprog ]]; then
-    $RscriptEXE $optionRprog -o=$nameprod -d=$nameprod"_rmsd.xvg"              \
-      -g=$nameprod"_rgyration.xvg" -ss=$nameprod"_ss_count.xvg"                \
-      -x=$nameprod"_density.xvg" -t=$nameprod"_temperature.xvg"                \
-      -u=$nameprod"_potential.xvg" -p=$nameprod"_pressure.xvg"                 \
-      -fb=$nameprod"_rmsf_bb.xvg" -fsc=$nameprod"_rmsf_sc.xvg"                 \
-      -hm="pes_profile.txt"
-    $RscriptEXE $DIR/scriptino.R $DIR/schematics_bindingSites                  \
-      $DIR/schematics_motileRegions $nameprod"_rmsf_bb.xvg"                    \
-      $nameprod"_rmsf_schem"
-  else 
-    error_exit " the function "GGplot" requires a R script located in $DIR."
-  fi 
-} &> >(tee doitgromacs_ggplot.log) >&2
-
-mean_sas() {
-  ls && echo "select some files please: " &&  read -a FILES_ARRAY
-  for i in "${FILES_ARRAY[@]}" ; do
-    modVim $i
-    # grep: avoid commented lines
-    # awk: select 4th column and calculate the mean
-    grep -v '^#' $i | awk '{total += $4} END {print total/NR}'
-  done
-}
-
-mean_hb() {
-  ls && echo "select some files please: " &&  read -a FILES_ARRAY
-  for i in "${FILES_ARRAY[@]}" ; do
-    modVim $i
-    # grep: avoid commented lines
-    # awk: select 2nd column and calculate the mean
-    grep -v '^#' $i | awk '{total += $2} END {print total/NR}'
-  done
-}
-
-CAtoMAIN () {
-  filenameFULL=$(basename $1)
-  filename="${filenameFULL%.*}"
-  echo $filename
-  grep -B1000000 -m1 -e "TER" $1 > start.pdb
-  ~martin/bin/catomain start.pdb $filename"_start.pdb"
-  grep -A1000000 -m2 -e "TER" $1 > end.pdb
-  sed -e '/^TER/d' end.pdb
-  ~martin/bin/catomain end.pdb $filename"_end.pdb"
-  sed -i 's/ A / B /g' $filename"_end.pdb" 
-
-  cat $filename"_start.pdb" $filename"_end.pdb" > $filename"_all.pdb"
-  rm start.pdb; rm end.pdb
-  rm $filename"_start.pdb"; rm $filename"_end.pdb"
-}&> >(tee doitgromacs_catomain.log) >&2
-
-split_states() {
-  if [ ! -d ./$1"_states" ]; then
-    mkdir $1_states
-    cp $1 $1"_states"
-    cd $1"_states"
-  fi
-
-  # check how many structure you have
-  #grep '^REMARK' $1
-
-  # grep the times and save them in a list
-  times=($(grep '^REMARK' $1 | grep -Eo '[0-9]+.[0-9]+\s'))
-  #lines=($(grep -n 'REMARK' $1 | grep -Eo '^[0-9]+'))
-  length_times=${#times[@]}
-
-  for (( i=0; i<$length_times; i++ )); do
-    if [[ $i == $((length_times - 1)) ]]; then
-      grep -A1000000 -m1 -e "REMARK.time\s*${times[$i]}" $1 > "${times[i]}.pdb"
-      CAtoMAIN "${times[i]}.pdb"
-    else
-      grep -A100000 "REMARK.time\s*${times[$i]}" $1 | grep -B1000000 "REMARK.time\s*${times[$i+1]}" > "${times[i]}.pdb"
-      sed -i '$ d' "${times[$i]}.pdb"
-      CAtoMAIN "${times[i]}.pdb"
-    fi  
-  done
-
-  rm $1
-  cd ..
-}&> >(tee doitgromacs_split_states.log) >&2
 

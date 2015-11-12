@@ -3,7 +3,7 @@
 helpMessage() {                                                                 
   cat <<EOF                                                                     
                                                                                 
-                        doitGROMACS.sh -  v 1.0.5                               
+                        doitGROMACS.sh -  v 2.0                               
                                                                                 
     Copyright (c) 2013-2014, Francesco Carbone, University College London (UCL) 
                                                                                 
@@ -34,7 +34,7 @@ helpMessage() {
     Option   Type     Value       Description                                   
     --------------------------------------------------------------------------- 
     -[no]h   bool     yes         Print help info                               
-#    -u       string   txt file    Analyses of an unres trajectory               
+    -u       string   txt file    Analyses of an unres trajectory               
     -g       bool     bool        Set gromacs 5 syntax                          
                                                                                 
                                           [ALWAYS REQUIRED in absence of -u]    
@@ -87,7 +87,7 @@ doitOptions() {
                
 
         mean          - calculate the mean of the sas values                    
-        mean_plus     - calculate the mean of the hydrogen bond values                  
+        mean_multi    - calculate the mean of the hydrogen bond values                  
         modvim+       - replace "@" with "#" in a file                          
         catomain      - rebuild a full atoms structure from CA structure        
         split_states  - given an unres trj extract all the frames and convert   

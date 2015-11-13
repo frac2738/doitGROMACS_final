@@ -106,15 +106,6 @@ gromCLUSTER() {
    cd ..
 } &> >(tee doitgromacs_cluster.log) >&2
 
-#----------------------
-# description : The name says everything
-# requirements: see "clusterAnalysis"
-repeatgromCLUSTER() {
-   mv clusters_$name1 clusters"$i"_$name1
-   clusterAnalysis
-   read -e -p "Do you want to rerun the analysis with a different method? [yes/no] " ramen
-}
-
 #----
 # description : The name says everything
 # requirements: .tpr + .xtc
@@ -154,7 +145,7 @@ gromPCA() {
      -s ../$tpr -f ../$trj -first 1 -last 2 -2d 2d-12.xvg
   $groPATH/$g_sham -f 2d-12.xvg -ls gibbs-12.xpm -notime
   $groPATH/$xpm2ps -f gibbs-12.xpm -o gibbs-12.eps -rainbow red
-  perl $DIR/doitGROMACS_xpm2txt.pl gibbs-12.xpm
+  perl $FUNCTIONS_BIN/doitGROMACS_xpm2txt.pl gibbs-12.xpm
   GGplot; mv $nameprod"_pes.png" ..
   cd ..
 } &> >(tee doitgromacs_pca.log) >&2
@@ -194,7 +185,7 @@ gromSAS-sites() {
   fi
   cd sas_$name1
   if [ -n "${gromacs_ver}" ]; then    # if gromacs 5
-    (echo "G6P"; echo "Coenzyme", echo "strNADPplus" ) | $groPATH/$g_sas      \
+    (echo "G6P"; echo "Coenzyme"; echo "strNADPplus" ) | $groPATH/$g_sas      \
       -s ../$tpr -f ../$trj -n ../$name1.ndx -o $name1"_area_sites.xvg"       \
       -or $name1"_resarea_sites.xvg" -dt $optionDTsas -b $optionSTARTime      \
       -surface Protein -output 

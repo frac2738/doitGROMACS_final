@@ -151,15 +151,7 @@ case $choice in
   rmsdfg)
     rmsdf ;;
   cluster)
-    i=1
-    gromCLUSTER
-    # rewrite in a "repeat" function so I can use it also with option 10
-    read -e -p "Do you want to rerun the analysis with a different method? [yes/no] " ramen
-    while [ "$ramen" == "yes" ] 
-    do
-      repeatgromCLUSTER
-      i=$(($i+1))
-    done  ;;
+    gromCLUSTER ;;
   pca)
     gromPCA   ;;
   sas)

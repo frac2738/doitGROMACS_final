@@ -54,18 +54,18 @@ clean_trj() {
 rmsdf() {
    checkFlags_t
    # calculating the RMSD 
-   (echo "$optionRMSD"; echo "$optionRMSD") | $groPATH/$g_rms -s $tpr -f $trj   \
+   (echo "$optionRMSD"; echo "$optionRMSD") | $groPATH/$g_rms -s $tpr -f $trj  \
       -o $nameprod"_rmsd.xvg" -tu ns
    modVim $nameprod"_rmsd.xvg"
    # calculating the radius of Gyration 
-   echo $optionGYRATION | $groPATH/$g_gyrate -s $tpr -f $trj                    \
+   echo $optionGYRATION | $groPATH/$g_gyrate -s $tpr -f $trj                   \
       -o $nameprod"_rgyration.xvg"
    modVim $nameprod"_rgyration.xvg"
-   echo $optionRMSFb | $groPATH/$g_rmsf -s $tpr -f $trj                         \
+   echo $optionRMSFb | $groPATH/$g_rmsf -s $tpr -f $trj                        \
       -o $nameprod"_rmsf_bb.xvg" -oq $nameprod"_rmsf_bb.pdb" -res
    modVim $nameprod"_rmsf_bb.xvg" 
       # res=averages for each residues
-   echo $optionRMSFsc | $groPATH/$g_rmsf -s $tpr -f $trj                        \
+   echo $optionRMSFsc | $groPATH/$g_rmsf -s $tpr -f $trj                       \
       -o $nameprod"_rmsf_sc.xvg" -oq $nameprod"_rmsf_sc.pdb" -res 
    modVim $nameprod"_rmsf_sc.xvg" 
 } &> >(tee doitgromacs_rmsf.log) >&2
@@ -142,11 +142,11 @@ gromPCA() {
   done
   # calculate 2d projections and FES
   (echo "$optionPCA"; echo "$optionPCA") | $groPATH/$g_anaeig -v eigenvectors.trr   \
-     -s ../$tpr -f ../$trj -first 1 -last 2 -2d 2d-12.xvg
-  $groPATH/$g_sham -f 2d-12.xvg -ls gibbs-12.xpm -notime
-  $groPATH/$xpm2ps -f gibbs-12.xpm -o gibbs-12.eps -rainbow red
-  perl $FUNCTIONS_BIN/doitGROMACS_xpm2txt.pl gibbs-12.xpm
-  GGplot; mv $nameprod"_pes.png" ..
+     -s ../$tpr -f ../$trj -first 1 -last 2 -2d 2d-12.xvg || checkExitCode
+  $groPATH/$g_sham -f 2d-12.xvg -ls gibbs-12.xpm -notime || checkExitCode
+  $groPATH/$xpm2ps -f gibbs-12.xpm -o gibbs-12.eps -rainbow red || checkExitCode
+  perl $FUNCTIONS_BIN/doitGROMACS_xpm2txt.pl gibbs-12.xpm || checkExitCode
+  GGplot || checkExitCode ; mv $nameprod"_pes.png" ..
   cd ..
 } &> >(tee doitgromacs_pca.log) >&2
 
@@ -165,7 +165,7 @@ gromSAS() {
   if [ -n "${gromacs_ver}" ]; then    # if gromacs 5
     $groPATH/$g_sas -s ../$tpr -f ../$trj -n ../$name1.ndx                    \
     -o $name1"_area.xvg" -or $name1"_resarea.xvg" -dt $optionDTsas            \
-    -b $optionSTARTime  -probe $optionPROBE -surface Protein -output Protein
+    -b $optionSTARTime  -probe $optionPROBE -surface Protein -output Protein || checkExitCode
   modVim $name1"_area.xvg" ; modVim $name1"_resarea.xvg"
   else
    (echo "Protein"; echo "$optionSAS") | $groPATH/$g_sas -s ../$tpr -f ../$trj  \

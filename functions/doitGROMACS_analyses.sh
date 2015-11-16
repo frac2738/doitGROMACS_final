@@ -235,7 +235,7 @@ gromHB-sites() {
     -num $name1"_G6P_count.xvg" -dist $name1"_G6P_dist.xvg"                   \
     -hbm $name1"_G6P_matrix" 
   modVim $name1"_G6P_count.xvg" ; modVim $name1"_G6P_dist.xvg"
-  (echo "$Coenzyme"; echo "$Coenzyme") | $groPATH/$g_hbond -s ../$tpr         \
+  (echo "Coenzyme"; echo "Coenzyme") | $groPATH/$g_hbond -s ../$tpr         \
     -f ../$trj -n ../$name1.ndx -tu ps -dt $optionDThb -b $optionSTARTime     \
     -num $name1"_Coenzyme_count.xvg" -dist $name1"_Coenzyme_dist.xvg"         \
     -hbm $name1"_Coenzyme_matrix" 

@@ -74,20 +74,19 @@ doitOptions() {
         npt           - Starting from NPT **                                    
         h20           - Remove water from a trajectory file                     
         cond          - Check the simulation conditions (U-T-P-density)         
-        rmsdfg        - Calculate RMSD, GYRATION RADIUS and RMSF [backbone & sidechains] 
+        rmsdfg        - Calculate RMSD, GYRATION RADIUS and RMSF [backbone & sidechains]
+        dssp          - DSSP analysis                                           
         cluster       - Cluster analysis                                        
         pca           - PCA analysis                                            
-        dssp          - DSSP analysis                                           
-        ggplot        - Plot with ggplot (R)                                    
         sas           - SAS analysis                                            
         sas-sites     - SAS analysis on only the binding sites                  
         hb            - Hydrogen bonds analysis [not yet implemented]           
-        hb-sites      - Hydrogen bonds analysis on binding sites 
+        hb-sites      - Hydrogen bonds analysis on binding sites
+        ggplot        - Plot with ggplot (R)                                    
         indexCreator  - Create binding sites index for the mutant       
                
-
-        mean          - calculate the mean of the sas values                    
-        mean_multi    - calculate the mean of the hydrogen bond values                  
+        mean          - calculate the mean of values [2nd column]                    
+        mean_multi    - calculate the mean of values [several columns]           
         modvim+       - replace "@" with "#" in a file                          
         catomain      - rebuild a full atoms structure from CA structure        
         split_states  - given an unres trj extract all the frames and convert   

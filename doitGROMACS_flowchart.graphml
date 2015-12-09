@@ -545,7 +545,7 @@ periodicity 1
           <y:Geometry height="74.23642594594594" width="94.60706043848631" x="2145.1597452604865" y="600.6853885135135"/>
           <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.962890625" modelName="custom" textColor="#000000" visible="true" width="67.03515625" x="13.78595209424293" y="28.13676766047297">OPTIONS 1<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.962890625" modelName="custom" textColor="#000000" visible="true" width="55.650390625" x="19.47833490674293" y="28.13676766047297">OPTIONS<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -2092,7 +2092,7 @@ to store the analysis<y:LabelModel>
           <y:Geometry height="87.01697441840597" width="101.25" x="3318.238215034474" y="406.5153273589357"/>
           <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="31.92578125" modelName="custom" textColor="#000000" visible="true" width="91.28125" x="4.984375" y="27.54559658420294">check if flags
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="31.92578125" modelName="custom" textColor="#000000" visible="true" width="91.28125" x="4.984375" y="27.545596584202997">check if flags
 -s &amp; -f ,are set<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
@@ -2125,7 +2125,7 @@ to store the analysis<y:LabelModel>
           <y:Geometry height="40.000000000000114" width="125.72021621621661" x="3475.768624764203" y="430.0238145681386"/>
           <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="31.92578125" modelName="custom" textColor="#000000" visible="true" width="121.5859375" x="2.0671393581083066" y="4.037109375">create a directory
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="31.92578125" modelName="custom" textColor="#000000" visible="true" width="121.5859375" x="2.0671393581083066" y="4.037109375000057">create a directory
 to store the analysis<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
@@ -3885,7 +3885,6 @@ to store the analysis<y:LabelModel>
       </data>
     </edge>
     <edge id="e161" source="n127" target="n129">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>

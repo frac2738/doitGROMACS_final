@@ -16,7 +16,7 @@ sim_conditions() {
   echo Density | $groPATH/$g_energy -f $energy -o $nameprod"_density.xvg"
   modVim $nameprod"_density.xvg"
   # to plot using ggplot check option the function "GGplot"
-} &> >(tee doitgromacs_simcond.log) >&2
+} &> >(tee $name1"_simcond.log") >&2
 
 
 #----------
@@ -45,7 +45,7 @@ clean_trj() {
    mv $nameprod"_fit.xtc" $nameprod".xtc" || checkExitCode
    mv $nameprod"_only.tpr" $nameprod".tpr" || checkExitCode
    mv $nameprod"_only.gro" $nameprod".gro" || checkExitCode
-} &> >(tee doitgromacs_cleantrj.log) >&2
+} &> >(tee $name1"_cleantrj.log") >&2
 
 #------
 # description : It calculates rmsd (backbone), gyration radius and rmsf (both (echo "r 213 243 234 234"; echo "name 10 prova"; echo "q") | 
@@ -68,7 +68,7 @@ rmsdf() {
    echo $optionRMSFsc | $groPATH/$g_rmsf -s $tpr -f $trj                       \
       -o $nameprod"_rmsf_sc.xvg" -oq $nameprod"_rmsf_sc.pdb" -res 
    modVim $nameprod"_rmsf_sc.xvg" 
-} &> >(tee doitgromacs_rmsf.log) >&2
+} &> >(tee $name1"_rmsf.log") >&2
 
 #----------------
 # description : read the name of the function
@@ -104,7 +104,7 @@ gromCLUSTER() {
    # dss
    # show cartoon
    cd ..
-} &> >(tee doitgromacs_cluster.log) >&2
+} &> >(tee $name1"_cluster.log") >&2
 
 #----
 # description : The name says everything
@@ -148,7 +148,7 @@ gromPCA() {
   perl $FUNCTIONS_BIN/doitGROMACS_xpm2txt.pl gibbs-12.xpm || checkExitCode
   GGplot || checkExitCode ; mv $nameprod"_pes.png" ..
   cd ..
-} &> >(tee doitgromacs_pca.log) >&2
+} &> >(tee $name1"_pca.log") >&2
 
 #------------
 # description : The name says everything
@@ -174,7 +174,7 @@ gromSAS() {
    # probe 0.7 nm perchè 16A -> 1.6 nm -> raggio 0.7 nm
   modVim $name1"_area.xvg" ; modVim $name1"_resarea.xvg"
   fi ; cd ..
-} &> >(tee doitgromacs_sas.log) >&2
+} &> >(tee $name1"_sas.log") >&2
 
 gromSAS-sites() {
   # if -s and -f are not set prompt and exit
@@ -201,7 +201,7 @@ gromSAS-sites() {
       -n ../$name1.ndx -o $name1"_strNADPplus_area.xvg"  -b $optionSTARTime       \
       -or $name1"_strNADPplus_resarea.xvg" -dt $optionDTsas || checkExitCode
   fi ; cd ..
-} &> >(tee doitgromacs_sasites.log) >&2
+} &> >(tee $name1"_sasites.log") >&2
 
 #-------
 # description :
@@ -218,7 +218,7 @@ gromHB() {
     -hbm $name1"_hb_matrix" -tu ps -dt $optionDThb -b $optionSTARTime 
   modVim $name1"_hb_count.xvg" ; modVim $name1"_hb_dist.xvg"
   cd ..
-} &> >(tee doitgromacs_hb.log) >&2
+} &> >(tee $name1"_hb.log") >&2
 
 #-------
 # description :
@@ -246,7 +246,7 @@ gromHB-sites() {
   -hbm $name1"_strNADPplus_matrix"   
   modVim $name1"_strNADPplus_count.xvg" ; modVim $name1"_strNADPplus_dist.xvg"
   cd ..
-} &> >(tee doitgromacs_hbsites.log) >&2
+} &> >(tee $name1"_hbsites.log") >&2
 
 #---------
 # description :
@@ -257,5 +257,5 @@ gromDSSP() {
   echo $optionDSSP | $groPATH/$do_dssp -ver 1 -f $trj -s $tpr -o $nameprod"_ss.xpm" \
     -sc $nameprod"_ss_count.xvg" -tu ps -dt $optionDTdssp -b $optionSTARTime  
   modVim $nameprod"_ss_count.xvg"
-} &> >(tee doitgromacs_dssp.log) >&2
+} &> >(tee $name1"_dssp.log") >&2
 

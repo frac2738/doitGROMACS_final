@@ -119,7 +119,7 @@ doitOptions
 # check the existance of the selected option 
 read -e -p "execute option  " choice
 case $choice in
-  all|emin|nvt|npt|h20|cond|rmsdfg|cluster|pca|sas|sas-sites|dssp|hb|hb-sites|ggplot|ggplot-bis|indexCreator|modvim+|mean|mean_multi)
+  all|emin|nvt|npt|h20|cond|rmsdfg|cluster|pca|sas|sas-sites|dssp|contact|hb|hb-sites|ggplot|ggplot-bis|indexCreator|modvim+|mean|mean_multi)
     if [ -z ${timens} ]; then
       timens="X"
       nameprod=${name1}_${timens}
@@ -160,6 +160,8 @@ case $choice in
     gromSAS-sites  ;;
   dssp)
     gromDSSP ;;
+  contact)
+    gromCONTACT ;;
   hb)
     gromHB ;;         
   hb-sites)

@@ -75,7 +75,8 @@ doitOptions() {
         h20           - Remove water from a trajectory file                     
         cond          - Check the simulation conditions (U-T-P-density)         
         rmsdfg        - Calculate RMSD, GYRATION RADIUS and RMSF [backbone & sidechains]
-        dssp          - DSSP analysis                                           
+        dssp          - DSSP analysis    
+        contact       - Compute contact maps                                       
         cluster       - Cluster analysis                                        
         pca           - PCA analysis                                            
         sas           - SAS analysis                                            

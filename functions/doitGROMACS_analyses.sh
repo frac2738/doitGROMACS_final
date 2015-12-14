@@ -264,8 +264,10 @@ gromCONTACT() {
   echo $optionCONTACT | $groPATH/$g_mdmat -f $trj -s $tpr                       \
     -mean $nameprod"_contact_mean.xpm" -frames $nameprod"_contact_frames.xpm"   \
     -dt $optionDTcontact -b $optionSTARTime 
-  $g_xpm2ps -f $nameprod"_contact_frames.xpm" -o $nameprod"_contact_frames.eps" \
-    -frame -size 1600
+  $g_xpm2ps -di $FUNCTIONS_BIN/xpm2eps.m2p -f $nameprod"_contact_frames.xpm"    \
+    -o $nameprod"_contact_frames.eps" -frame -size 1600 -rainbow red
+  $g_xpm2ps -di $FUNCTIONS_BIN/xpm2eps.m2p -f $nameprod"_contact_mean.xpm"    \
+    -o $nameprod"_contact_mean.eps" -frame -size 1600 -rainbow red
 }&> >(tee $name1"_contact.log") >&2
 
 

@@ -25,10 +25,26 @@ mean_multi() {
   done
 }
 
-CAtoMAIN () {
+PDBtoXTC() {
+  # input is passed using the -c flag
+  filenameFULL=$(basename $pdb1)
+  filename="${filenameFULL%.*}"
+  $groPATH/$trjconv -f $pdb1 -o $filename".xtc"
+  $groPATH/gmxcheck -f $filename".xtc" 
+  echo "done, check if the number of frame matches."
+
+  echo Protein | $groPATH/$trjconv -s $optionUNRESfilename -f $filename".xtc" -o $filename".gro"       \
+    -dump $optiondump || checkExitCode
+   # account for the periodicity (nojump)
+  echo Protein | $groPATH/$trjconv -s $filename".gro" -f $filename".xtc"        \
+    -o $filename"_nojump.xtc" -pbc nojump || checkExitCode
+  (echo "Backbone"; echo "Protein") | $groPATH/$trjconv -s $filename".gro" -f $filename"_nojump.xtc" \
+    -o $filename"_fit.xtc" -fit rot+trans || checkExitCode
+}&> >(tee doitgromacs_PDBtoXTC.log) >&2
+
+CAtoMAIN() {
   filenameFULL=$(basename $1)
   filename="${filenameFULL%.*}"
-  echo $filename
   grep -B1000000 -m1 -e "TER" $1 > start.pdb
   ~martin/bin/catomain start.pdb $filename"_start.pdb"
   grep -A1000000 -m2 -e "TER" $1 > end.pdb

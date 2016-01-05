@@ -85,13 +85,14 @@ doitOptions() {
         hb-sites      - Hydrogen bonds analysis on binding sites
         ggplot        - Plot with ggplot (R)                                    
         indexCreator  - Create binding sites index for the mutant       
-               
+          
         mean          - calculate the mean of values [2nd column]                    
         mean_multi    - calculate the mean of values [several columns]           
         modvim+       - replace "@" with "#" in a file                          
         catomain      - rebuild a full atoms structure from CA structure        
         split_states  - given an unres trj extract all the frames and convert   
-                        into all-atom structures                                
+                        into all-atom structures             
+        PDBtoXTC      - convert a pdb file (several structures) into a xtc                    
                                                                                 
     --------------------------------------------------------------------        
                                -----------                                      

@@ -46,6 +46,40 @@ split_states() {
     mkdir $1_states
     cp $1 $1"_states"
     cd $1"_states"
+    touch catomain_states.pdb # file containing all the pdbs together
+  fi
+
+  # grep the times and save them in a list
+  times=($(grep '^REMARK' $1 | grep -Eo '[0-9]+.[0-9]+\s'))
+  #lines=($(grep -n 'REMARK' $1 | grep -Eo '^[0-9]+'))
+  length_times=${#times[@]}
+
+  for (( i=0; i<$length_times; i++ )); do
+    echo ${times[$i]} >> catomain_states.pdb
+    if [[ $i == $((length_times - 1)) ]]; then
+      grep -A1000000 -m1 -e "REMARK.time\s*${times[$i]}" $1 > "${times[i]}.pdb"
+      CAtoMAIN "${times[i]}.pdb"
+      cat "${times[i]}_all.pdb" >> catomain_states.pdb
+      echo "ENDMDL" >> catomain_states.pdb   
+    else
+      grep -A100000 "REMARK.time\s*${times[$i]}" $1 | grep -B1000000 "REMARK.time\s*${times[$i+1]}" > "${times[i]}.pdb"
+      sed -i '$ d' "${times[$i]}.pdb"
+      CAtoMAIN "${times[i]}.pdb"
+      cat "${times[i]}_all.pdb" >> catomain_states.pdb
+      echo "ENDMDL" >> catomain_states.pdb   
+    fi
+  done
+
+  rm $1
+  cd ..
+}&> >(tee doitgromacs_split_states.log) >&2
+
+# version without the final concatenation (catomain_states.pdb)
+split_statesORIGINAL() {
+  if [ ! -d ./$1"_states" ]; then
+    mkdir $1_states
+    cp $1 $1"_states"
+    cd $1"_states"
   fi
 
   # check how many structure you have

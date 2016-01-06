@@ -130,6 +130,12 @@ case $choice in
     checkFlags_pdb; CAtoMAIN $pdb1  ;;
   split_states)
     checkFlags_pdb; split_states $pdb1  ;;
+  PDBtoXTC)
+    checkFlags_pdb; PDBtoXTC  ;;
+  dssp_perc)
+    gromDSSPpercentage  ;;
+  dssp_perc)
+    gromDSSPpercentage  ;;
   *)
   doitOptions
   error_exit " line $LINENO, An error has occurred. Execution halted! choice '$choice' not recognised."  ;;

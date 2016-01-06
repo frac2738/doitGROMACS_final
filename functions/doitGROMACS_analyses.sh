@@ -248,7 +248,13 @@ gromHB-sites() {
   cd ..
 } &> >(tee $name1"_hbsites.log") >&2
 
-#---------
+gromDSSPpercentage() {
+  timeps=$(($timens*1000))
+  ls && read -e -p "select a xpm file please: " xpm
+  perl $FUNCTIONS_BIN/getTimePercentageOfSS.pl -n $optionDTdssp -l $timeps   \
+    -f $xpm  > $xpm"_ss.txt" || checkExitCode 
+}
+
 # description :
 # requirements: .tpr + .xtc
 gromDSSP() {
@@ -256,8 +262,12 @@ gromDSSP() {
   checkFlags_t
   echo $optionDSSP | $groPATH/$do_dssp -ver 1 -f $trj -s $tpr -o $nameprod"_ss.xpm" \
     -sc $nameprod"_ss_count.xvg" -tu ps -dt $optionDTdssp -b $optionSTARTime  
-  modVim $nameprod"_ss_count.xvg"
+  modVim $nameprod"_ss_count.xvg" 
+  timeps=$(($timens*1000))
+  perl $FUNCTIONS_BIN/getTimePercentageOfSS.pl -n $optionDTdssp -l $timeps     \
+    -f $nameprod"_ss.xpm" > $nameprod"_ss.txt" || checkExitCode
 } &> >(tee $name1"_dssp.log") >&2
+
 
 gromCONTACT() {
   checkFlags_t

@@ -3,10 +3,10 @@
 #------------------------------------------------------------------------------
 #
 #   File:       doitGROMACS.sh          
-#   Version:    V2.0                                                    
-#   Update:     5.11.15                                                  
+#   Version:    V2.1                                                    
+#   Update:     8.Jan.15                                                  
 #
-#   Copyright:  (c) Francesco Carbone, UCL, 2015
+#   Copyright:  (c) Francesco Carbone, UCL, 2013-2016
 #   Author:     Francesco Carbone, UCL                                    
 #   Function:   Script to execute a bunch of stuff with gromacs           
 #   Address:    Institute of Structural and Molecular Biology
@@ -21,7 +21,7 @@
 #   Decription:
 #   Script that 
 #
-#   doitgromacs-v.2.0
+#   doitgromacs-v.2.1
 #     |-- doitGROMACS_default.config: file containing user-dependable 
 #     |                               variables used by doitGROMACS.sh. 
 #     |                                .

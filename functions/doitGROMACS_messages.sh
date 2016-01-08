@@ -3,9 +3,9 @@
 helpMessage() {                                                                 
   cat <<EOF                                                                     
                                                                                 
-                        doitGROMACS.sh -  v 2.0                               
+                        doitGROMACS.sh -  v 2.1                               
                                                                                 
-    Copyright (c) 2013-2014, Francesco Carbone, University College London (UCL) 
+    Copyright (c) 2013-2016, Francesco Carbone, University College London (UCL) 
                                                                                 
     This script is designed to automatise the first step of a molecular dynamics
     experiment ( solvation and equilibration) and to run some basic analyses on 

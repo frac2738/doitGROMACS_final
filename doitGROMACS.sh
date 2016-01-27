@@ -19,7 +19,10 @@
 #------------------------------------------------------------------------------
 #
 #   Decription:
-#   Script that 
+#   This script was design to automatise some parts of md simualtions with 
+#   Gromacs (v4.6 and v5). This script is capable to perform energy minimisation
+#   equilibration steps (NVT and NPT) and run some standards analyses on the 
+#   trajectories. 
 #
 #   doitgromacs-v.2.1
 #     |-- doitGROMACS_default.config: file containing user-dependable 
@@ -54,7 +57,7 @@
 
 #---------------------------- The program begins here --------------------------
 
-# set the working directories
+# find from where the script is lunch.
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 FUNCTIONS_BIN="$DIR/functions"
 optionRprog="$FUNCTIONS_BIN/doitRGROMACS.R"
@@ -136,6 +139,8 @@ case $choice in
     gromDSSPpercentage  ;;
   dssp_perc)
     gromDSSPpercentage  ;;
+  rama)
+    gromRAMAchandran  ;;
   *)
   doitOptions
   error_exit " line $LINENO, An error has occurred. Execution halted! choice '$choice' not recognised."  ;;

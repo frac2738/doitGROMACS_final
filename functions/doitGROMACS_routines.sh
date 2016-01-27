@@ -11,7 +11,7 @@ setGROMACSbinaries() {
     xpm2ps='gmx xpm2ps'; g_cluster='gmx cluster'; g_covar='gmx covar'           
     g_anaeig='gmx anaeig'; g_analyze='gmx analyze'; g_sham='gmx sham'           
     g_sas='gmx sasa'; g_hbond='gmx hbond'; do_dssp='gmx do_dssp'
-    g_mdmat='gmx mdmat'; g_xpm2ps='gmx xpm2ps'            
+    g_mdmat='gmx mdmat'; g_xpm2ps='gmx xpm2ps'; g_rama='gmx rama'          
   else                                                                          
     groPATH=$groPATH4                                                           
     gromacs_ver='4.6'; gromacs_ver_mex                                          
@@ -22,7 +22,7 @@ setGROMACSbinaries() {
     xpm2ps='xpm2ps'; g_cluster='g_cluster'; g_covar='g_covar'                   
     g_anaeig='g_anaeig'; g_analyze='g_analyze'; g_sham='g_sham'                 
     g_sas='g_sas'; g_hbond='g_hbond'; do_dssp='do_dssp'    
-    g_mdmat='g_mdmat'; g_xpm2ps='xpm2ps'            
+    g_mdmat='g_mdmat'; g_xpm2ps='xpm2ps'; g_rama='g_rama'      
   fi                                                                            
 }                                                                               
 

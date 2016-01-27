@@ -273,12 +273,21 @@ gromCONTACT() {
   checkFlags_t
   echo $optionCONTACT | $groPATH/$g_mdmat -f $trj -s $tpr                       \
     -mean $nameprod"_contact_mean.xpm" -frames $nameprod"_contact_frames.xpm"   \
-    -dt $optionDTcontact -b $optionSTARTime 
+    -dt $optionDTcontact -b $optionSTARTime -no $nameprod"_contact_number.xvg"
   $g_xpm2ps -di $FUNCTIONS_BIN/xpm2eps.m2p -f $nameprod"_contact_frames.xpm"    \
     -o $nameprod"_contact_frames.eps" -frame -size 1600 -rainbow red
   $g_xpm2ps -di $FUNCTIONS_BIN/xpm2eps.m2p -f $nameprod"_contact_mean.xpm"    \
     -o $nameprod"_contact_mean.eps" -frame -size 1600 -rainbow red
 }&> >(tee $name1"_contact.log") >&2
+
+gromRAMAchandran() {
+  checkFlags_t
+  $g_rama -s $tpr -f $trj -o $name1"_ramachandran.xvg" -dt $optionDTrama
+  read -e -p "which residue would you like to extract? (e.g. PRO-172)" resRAMA
+  grep "$resRAMA" $name1"_ramachandran.xvg" > $name1"_pro172.xvg"
+  $RscriptEXE $FUNCTIONS_BIN"/ramachandranPLOT.R" $name1"_pro172.xvg"
+  mv ramachandraPRO.png $name1"_pro172.png"
+}
 
 
 

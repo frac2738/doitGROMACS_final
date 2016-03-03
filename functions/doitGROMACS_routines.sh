@@ -11,7 +11,8 @@ setGROMACSbinaries() {
     xpm2ps='gmx xpm2ps'; g_cluster='gmx cluster'; g_covar='gmx covar'           
     g_anaeig='gmx anaeig'; g_analyze='gmx analyze'; g_sham='gmx sham'           
     g_sas='gmx sasa'; g_hbond='gmx hbond'; do_dssp='gmx do_dssp'
-    g_mdmat='gmx mdmat'; g_xpm2ps='gmx xpm2ps'; g_rama='gmx rama'          
+    g_mdmat='gmx mdmat'; g_xpm2ps='gmx xpm2ps'; g_rama='gmx rama'
+    make_ndx='gmx make_ndx'       
   else                                                                          
     groPATH=$groPATH4                                                           
     gromacs_ver='4.6'; gromacs_ver_mex                                          
@@ -22,7 +23,8 @@ setGROMACSbinaries() {
     xpm2ps='xpm2ps'; g_cluster='g_cluster'; g_covar='g_covar'                   
     g_anaeig='g_anaeig'; g_analyze='g_analyze'; g_sham='g_sham'                 
     g_sas='g_sas'; g_hbond='g_hbond'; do_dssp='do_dssp'    
-    g_mdmat='g_mdmat'; g_xpm2ps='xpm2ps'; g_rama='g_rama'      
+    g_mdmat='g_mdmat'; g_xpm2ps='xpm2ps'; g_rama='g_rama'
+    make_ndx='make_ndx'   
   fi                                                                            
 }                                                                               
 
@@ -72,10 +74,17 @@ checkFlags_energy() {
 
 indexCreator() {                                                                
   # create a index group specific for the glucose binding site in G6PD          
-  (echo "$option1"; echo "name 18 $option1name"; echo "q") | make_ndx -f $nameprod.gro -o $name1.ndx
+  (echo "$option1"; echo "name 18 $option1name"; echo "q") | $make_ndx -f $nameprod.gro -o $name1.ndx
   # create a index group specific for the Co-enzyme binding site in G6PD        
-  (echo "$option2"; echo "name 19 $option2name"; echo "q") | make_ndx -f $nameprod.gro -n $name1.ndx -o $name1.ndx
+  (echo "$option2"; echo "name 19 $option2name"; echo "q") | $make_ndx -f $nameprod.gro -n $name1.ndx -o $name1.ndx
   # create a index group specific for the structural NADPH+ binding site in G6PD
-  (echo "$option3"; echo "name 20 $option3name"; echo "q") | make_ndx -f $nameprod.gro -n $name1.ndx -o $name1.ndx
+  (echo "$option3"; echo "name 20 $option3name"; echo "q") | $make_ndx -f $nameprod.gro -n $name1.ndx -o $name1.ndx
 }      
+
+indexCreator_omega() {
+  (echo "$optionPROomega1"; echo "name 13 $optionPROomega1name"; echo "q") | $make_ndx -f ../$nameprod.gro -n $name1.ndx -o $name1"tmp.ndx"
+  (echo "$optionPROomega2"; echo "name 14 $optionPROomega2name"; echo "q") | $make_ndx -f ../$nameprod.gro -n $name1"tmp.ndx" -o $name1"_omega.ndx" 
+  rm $name1"tmp.ndx"
+}
+
 

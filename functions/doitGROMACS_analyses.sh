@@ -268,7 +268,6 @@ gromDSSP() {
     -f $nameprod"_ss.xpm" > $nameprod"_ss.txt" || checkExitCode
 } &> >(tee $name1"_dssp.log") >&2
 
-
 gromCONTACT() {
   checkFlags_t
   echo $optionCONTACT | $groPATH/$g_mdmat -f $trj -s $tpr                       \
@@ -282,6 +281,10 @@ gromCONTACT() {
 
 gromRAMAchandran() {
   checkFlags_t
+  if [ ! -d ./dihedrals_$name1 ] ; then
+     mkdir dihedrals_$name1
+  fi
+  cd dihedrals_$name1
   $g_rama -s $tpr -f $trj -o $name1"_ramachandran.xvg" -dt $optionDTrama
   read -e -p "which residue would you like to extract? (e.g. PRO-172)" resRAMA
   grep "$resRAMA" $name1"_ramachandran.xvg" > $name1"_pro172.xvg"
@@ -289,5 +292,37 @@ gromRAMAchandran() {
   mv ramachandraPRO.png $name1"_pro172.png"
 }
 
+gromOMEGA(){
+  checkFlags_t
+  indexfile=$name1".ndx"
+  indexOMEGA=$name1"_omega.ndx"
+  if [ ! -d ./omega_$name1 ] ; then
+     mkdir omega_$name1
+  fi
+  cd omega_$name1
+  if [ ! -f "$indexOMEGA" ]; then
+    cp ../$name1.ndx $indexfile
+    indexCreator_omega
+  fi
+  read -e -p "have you ckeck that the index defines the right atoms (C-CA-N-CA)? " polline
 
+  echo $optionPROomega1name | gmx angle -f ../$trj -n $indexOMEGA -od omegaPRO_c1.xvg -type dihedral 
+  echo $optionPROomega2name | gmx angle -f ../$trj -n $indexOMEGA -od omegaPRO_c2.xvg -type dihedral
+  $RscriptEXE $FUNCTIONS_BIN/omega_density.R omegaPRO_c1.xvg omegaPRO_c1
+  $RscriptEXE $FUNCTIONS_BIN/omega_density.R omegaPRO_c2.xvg omegaPRO_c2
+
+  gmx chi -s ../$tpr -f ../$trj -o output.xvg -g logfile.log -omega -all -dt $optionDTomega
+  $RscriptEXE $FUNCTIONS_BIN/omega_res.R omegaPRO146.xvg $name1"_omega_PRO146"
+  $RscriptEXE $FUNCTIONS_BIN/omega_res.R omegaPRO625.xvg $name1"_omega_PRO625"
+
+  #if [[ ! -x $pdbtorsions ]]; then echo "you don't have permission to execute pdbtorsions, leaving...."; exit 1
+  #else 
+    echo "0" >> pdbtorsion_results.txt
+    $pdbtorsions ../$name1"_0.pdb" | grep -e A172 -e B172 >> pdbtorsion_results.txt 
+    echo "$timens" >> pdbtorsion_results.txt
+    $pdbtorsions ../$name1"_"$timens".pdb" | grep -e A172 -e B172 >> pdbtorsion_results.txt 
+  #fi
+
+  cd ..
+}
 

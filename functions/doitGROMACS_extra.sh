@@ -60,32 +60,38 @@ CAtoMAIN() {
 split_states() {
   if [ ! -d ./$1"_states" ]; then
     mkdir $1_states
-    cp $1 $1"_states"
-    cd $1"_states"
-    touch catomain_states.pdb # file containing all the pdbs together
   fi
+  cp $1 $1"_states"
+  cd $1"_states"
+  touch catomain_states.pdb # file containing all the pdbs together
 
   # grep the times and save them in a list
-  times=($(grep '^REMARK' $1 | grep -Eo '[0-9]+.[0-9]+\s'))
+  #times=($(grep '^REMARK' $1 | grep -Eo '[0-9]+.[0-9]+\s'))
   #lines=($(grep -n 'REMARK' $1 | grep -Eo '^[0-9]+'))
-  length_times=${#times[@]}
+  #length_times=${#times[@]}
 
-  for (( i=0; i<$length_times; i++ )); do
-    echo ${times[$i]} >> catomain_states.pdb
-    if [[ $i == $((length_times - 1)) ]]; then
-      grep -A1000000 -m1 -e "REMARK.time\s*${times[$i]}" $1 > "${times[i]}.pdb"
-      CAtoMAIN "${times[i]}.pdb"
-      cat "${times[i]}_all.pdb" >> catomain_states.pdb
-      echo "ENDMDL" >> catomain_states.pdb   
+  IFS="
+"
+  structures=($(grep '^REMARK' $1))   # save lines in array
+  tot_structures=${#structures[@]}    # return total elements of array
+  nbr_structures=($(grep '^REMARK' $1 | grep -Eo ' ([0-9].) '))
+  
+  for (( i=0; i<$((tot_structures-1)); i++ )); do
+    echo ${structures[i]} >> catomain_states.pdb
+    
+    if [[ $i  == $(($tot_structures - 1)) ]]; then
+      grep -A1000000 -m1 -e "${structures[i]}" $1 > "$i.pdb"
+      CAtoMAIN "$i.pdb"
+      cat $i"_all.pdb" >> catomain_states.pdb
+      echo "ENDMDL" >> catomain_states.pdb 
     else
-      grep -A100000 "REMARK.time\s*${times[$i]}" $1 | grep -B1000000 "REMARK.time\s*${times[$i+1]}" > "${times[i]}.pdb"
-      sed -i '$ d' "${times[$i]}.pdb"
-      CAtoMAIN "${times[i]}.pdb"
-      cat "${times[i]}_all.pdb" >> catomain_states.pdb
-      echo "ENDMDL" >> catomain_states.pdb   
+      grep -A100000 "${structures[i]}" $1 | grep -B1000000 "${structures[i+1]}" > "$i.pdb"
+      sed -i '$ d' "$i.pdb"
+      CAtoMAIN "$i.pdb"
+      cat $i"_all.pdb" >> catomain_states.pdb
+      echo "ENDMDL" >> catomain_states.pdb
     fi
   done
-
   rm $1
   cd ..
 }&> >(tee doitgromacs_split_states.log) >&2

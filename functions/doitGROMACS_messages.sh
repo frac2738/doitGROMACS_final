@@ -85,7 +85,8 @@ doitOptions() {
         hb            - Hydrogen bonds analysis [not yet implemented]           
         hb-sites      - Hydrogen bonds analysis on binding sites
         ggplot        - Plot with ggplot (R)                                    
-        indexCreator  - Create binding sites index for the mutant       
+        indexCreator  - Create binding sites index for the mutant    
+        omega         - Calculate omega values for all the residues   
           
         mean          - calculate the mean of values [2nd column]                    
         mean_multi    - calculate the mean of values [several columns]           

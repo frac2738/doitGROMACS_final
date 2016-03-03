@@ -11,9 +11,6 @@ acrm:
 	echo "REXE='/export/francesco/softwares/r-3.2.1/bin/R'"	>> doitGROMACS.config	
 	echo "RscriptEXE='/export/francesco/softwares/r-3.2.1/bin/Rscript'"	>> doitGROMACS.config
 	echo ""	>> doitGROMACS.config
-	echo "#REXE='/export/francesco/R-3.1.0/bin/R'"	>> doitGROMACS.config	
-	echo "#RscriptEXE='/export/francesco/R-3.1.0/bin/Rscript'"	>> doitGROMACS.config
-	echo ""	>> doitGROMACS.config
 	echo "# R for any other machines"	>> doitGROMACS.config
 	echo "#REXE='/usr/bin/R'"	>> doitGROMACS.config	
 	echo "#RscriptEXE='/usr/Rscript'"	>> doitGROMACS.config

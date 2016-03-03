@@ -36,7 +36,9 @@
 #       |-- doiRGROMACS.R : R script used by the ggplot function to plot.
 #       |-- doiRfunctions.R : R script containing the functions used by doiRGROMACS.R
 #             
-#   PLANNED UPGRADES: - Comparison in R
+#   PLANNED UPGRADES: - there is the intention of stop cleaning from the water
+#                       the tpr file. This to allow a better use of the -dump 
+#                       option. 
 #
 #------------------------------------------------------------------------------
 #
@@ -122,7 +124,7 @@ doitOptions
 # check the existance of the selected option 
 read -e -p "execute option  " choice
 case $choice in
-  all|emin|nvt|npt|h20|cond|rmsdfg|cluster|pca|sas|sas-sites|dssp|contact|hb|hb-sites|ggplot|ggplot-bis|indexCreator|modvim+|mean|mean_multi)
+  all|emin|nvt|npt|h20|cond|rmsdfg|cluster|pca|sas|sas-sites|dssp|contact|hb|hb-sites|ggplot|ggplot-bis|indexCreator|modvim+|mean|mean_multi|omega)
     if [ -z ${timens} ]; then
       timens="X"
       nameprod=${name1}_${timens}
@@ -139,8 +141,6 @@ case $choice in
     gromDSSPpercentage  ;;
   dssp_perc)
     gromDSSPpercentage  ;;
-  rama)
-    gromRAMAchandran  ;;
   *)
   doitOptions
   error_exit " line $LINENO, An error has occurred. Execution halted! choice '$choice' not recognised."  ;;
@@ -189,5 +189,7 @@ case $choice in
       mean_single  ;;
   mean_multi)
       mean_multi  ;;
+  omega)
+      gromOMEGA   ;;
 esac
 #----------------------------- The program ends here ---------------------------

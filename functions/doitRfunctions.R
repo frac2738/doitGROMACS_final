@@ -55,31 +55,43 @@ cbind.all <- function (...) {
 }
 
 #---------------- f() generalplot(rmsd-rgyr) ----------------
-generalplot <- function(a,o,x,y,t,h,w,dpi) {
+generalplot <- function(a,o,x,y,h,w,dpi) {
   data.table <- read.file(a)
   names(data.table) <- c("time","value")
   data.ggplot <- ggplot(data.table,aes(x=time),environment=environment()) +
-    xlab(x) + ylab(y) + ggtitle(t) + geom_line(aes(y=value)) +
-    theme(legend.title=element_blank(), title = element_text(size=10))
+    xlab(x) + ylab(y) + geom_line(aes(y=value)) + #+ ggtitle(t) 
+    theme(legend.title=element_blank(), title=element_text(size=17),
+      axis.text=element_text(size=20),
+      axis.title.x = element_text(size=30),
+      axis.title.y = element_text(size=30)
+    )
+    #theme(legend.title=element_blank(), title = element_text(size=17))
   ggsave(o,height=h,width=w,dpi=dpi)
 }
-
-#---------------- f() generalComparisonPlot ----------------
-generalComparisonPlot <- function(a,o,x,y,t) {
-  data.ggplot <- ggplot(a,aes(x=time),environment=environment()) +
-  xlab(x) + ylab(y) + ggtitle(t) + 
-  geom_line(aes(y=value, colour=variable)) +
-  theme(legend.title=element_blank(), title = element_text(size=10))
-  ggsave(o,height=7,width=11,dpi=300) 
-} 
-
 
 # function used when there are multiple graphs on a plot
 generalggplot <- function(a,x,y,t) {
   ggplot(a,aes(a$V1),environment = environment())+
   xlab(x) + ylab(y) + ggtitle(t) + geom_line(aes(y=a$V2))+
-  theme(legend.title=element_blank(), title=element_text(size=10))
+  theme(legend.title=element_blank(), title=element_text(size=26),
+    axis.text=element_text(size=15),
+    axis.title.x = element_text(size=26),
+    axis.title.y = element_text(size=26)
+  )
 }
+
+#---------------- f() generalComparisonPlot ----------------
+generalComparisonPlot <- function(a,o,x,y,t) {
+  data.ggplot <- ggplot(a,aes(x=time),environment=environment()) +
+  xlab(x) + ylab(y) + 
+  geom_line(aes(y=value, colour=variable)) +
+    theme(legend.title=element_blank(), title=element_text(size=17),
+    axis.text=element_text(size=20),
+    axis.title.x = element_text(size=30),
+    axis.title.y = element_text(size=30)
+  )
+  ggsave(o,height=7,width=11,dpi=300) 
+} 
 
 # ggplot if the data.set was melted with id=time
 meltedggplot <- function(a,o,x,y,t,h,w,dpi) {
@@ -97,9 +109,13 @@ gromacsSS <- function(a,o,x,y,t,h,w,dpi) {
   SStructure.table <- SStructure.table[,!names(SStructure.table) %in% drops]
   SStructure.table <- melt(SStructure.table,id.vars="time")
   ss.ggplot <- ggplot(SStructure.table,aes(x=SStructure.table$time),environment=environment())+
-    xlab(x) + ylab(y) + ggtitle(t) +  
+    xlab(x) + ylab(y) +  
     geom_line(aes(y=SStructure.table$value,colour=SStructure.table$variable)) +
-    theme(legend.title=element_blank(),title=element_text(size=10))
+    theme(legend.title=element_blank(), title=element_text(size=17),
+      axis.text=element_text(size=20),
+      axis.title.x = element_text(size=30),
+      axis.title.y = element_text(size=30)
+    )
   ggsave(o,height=h,width=w,dpi=dpi)
 }
 
@@ -115,7 +131,7 @@ chain.split <- function(a) {
 }
 
 #---------------- f() RMSF ----------------
-gromacsRMSF <- function(a,b,o,x,y,t,h,w,dpi) {
+gromacsRMSF <- function(a,b,o,x,y,h,w,dpi) {
   rmsf.bb <- chain.split(a); rmsf.sc <- chain.split(b)
   rmsf.table <- cbind(rmsf.bb,rmsf.sc)
   names(rmsf.table) <- c("residue","bbA","residue2","bbB","residue3","scA","residue4","scB")
@@ -132,8 +148,8 @@ gromacsRMSF <- function(a,b,o,x,y,t,h,w,dpi) {
     geom_line(aes(y=rmsf.table$scB,colour="chain B")) + 
     theme(legend.position="none")
  
-  savef <- arrangeGrob(bb.ggplot,sc.ggplot,ncol=1,top=textGrob(t, gp=gpar(fontsize=10),just="top"))
-  ggsave(file=o,savef,height=h,width=w,dpi=dpi)  
+  savef <- arrangeGrob(bb.ggplot,sc.ggplot,ncol=1)#top=textGrob(t, gp=gpar(fontsize=17),just="top"))
+  ggsave(file=o,savef,height=h,width=w,dpi=dpi,limitsize = FALSE)  
 }
 
 #---------------- f() coordinate extractor ----------------
@@ -157,11 +173,17 @@ gromacsPES <- function(a,o,h,w,dpi) {
   
   ggheat <- ggplot(longenergy,aes(x=longenergy$variable,y=longenergy$y, fill=value),environment = environment())
   ggheat <- ggheat + geom_tile()+ theme(axis.text.x=element_blank(),axis.text.y=element_blank()) + 
-    xlab("pc1") + ylab("pc2") + ggtitle("Gibbs Energy Landscape [kJ/mol]") 
+    xlab("pc1") + ylab("pc2") + ggtitle("Gibbs Energy Landscape [kJ/mol]") +
+    theme(legend.title=element_blank(), title=element_text(size=17),
+      axis.text=element_text(size=20),
+      axis.title.x = element_text(size=30),
+      axis.title.y = element_text(size=30)
+    ) 
     #scale_fill_gradient(low="blue",high="red")
   ggsave(o,height=h,width=w,dpi=dpi)
 }
 
+#---------------- f() SIMCOND ----------------
 gromacsSimCond <- function(a,b,c,d,o,h,w,dpi) {
   potential <- read.file(a); temperature <- read.file(b)
   pressure <- read.file(c); density <- read.file(d)
@@ -180,8 +202,8 @@ gromacsSimCond <- function(a,b,c,d,o,h,w,dpi) {
   density.ggplot <- generalggplot(density,denxlab,denylab,dentitle)
 
   ggtitle <- grep.title(file.potential)
-  savef <- arrangeGrob(pot.ggplot,temp.ggplot,press.ggplot,density.ggplot,ncol=2, 
-    top=textGrob(ggtitle, gp=gpar(fontsize=10),just="top"))
+  savef <- arrangeGrob(pot.ggplot,temp.ggplot,press.ggplot,density.ggplot,ncol=2) 
+    top=textGrob(ggtitle, gp=gpar(fontsize=30),just="top")
   grid.draw(savef)
   ggsave(o,savef ,height=h,width=w,dpi=dpi)
 }

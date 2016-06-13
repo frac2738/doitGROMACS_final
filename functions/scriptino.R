@@ -12,8 +12,10 @@ names(rmsf.data) <- c("residue","nm")
 bb.ggplot <- ggplot(rmsf.data,aes(x=rmsf.data$residue),environment = environment())
 
 gg.rmsf <- bb.ggplot+ geom_line(aes(y=rmsf.data$nm)) + 
-          labs(y = "nm", x = NULL, title = NULL) + 
-          theme(legend.position="none",plot.margin=unit(c(0,1,0,1), "line"))
+          labs(y = "(nm)", x = NULL, title = NULL) + 
+          theme(legend.position="none",plot.margin=unit(c(0,1,0,1), "line"),
+            axis.text=element_text(size=20),
+            axis.title.y = element_text(size=30))
 
 binding.sites <- ggplot(binding.schem,running=order_by(Domain, ~Start), aes(x=Type, ymin=Start, ymax=Stop, colour=Domain)) +
   scale_color_manual(values=c("white", "red","blue")) +
@@ -40,6 +42,6 @@ maxWidth = grid::unit.pmax(gA$widths[2:5], gB$widths[2:5])
 gA$widths[2:5] <- as.list(maxWidth)
 gB$widths[2:5] <- as.list(maxWidth)
 gC$widths[2:5] <- as.list(maxWidth)
-hello <- arrangeGrob(gA, gB,gC, ncol=1,top=textGrob("rmsf fluctuations", gp=gpar(fontsize=10),just="top"),heights = c(0.9,0.05,0.05))
+hello <- arrangeGrob(gA, gB,gC, ncol=1,heights = c(0.9,0.05,0.05),top=textGrob("", gp=gpar(fontsize=10),just="top"))
 
 ggsave(paste0(args[4],".png"),hello, height=7,width=11,dpi=300)

@@ -74,11 +74,11 @@ checkFlags_energy() {
 
 indexCreator() {                                                                
   # create a index group specific for the glucose binding site in G6PD          
-  (echo "$option1"; echo "name 18 $option1name"; echo "q") | $make_ndx -f $nameprod.gro -o $name1.ndx
+  (echo "$option1"; echo "name 10 $option1name"; echo "q") | $make_ndx -f $nameprod.gro -o $name1.ndx
   # create a index group specific for the Co-enzyme binding site in G6PD        
-  (echo "$option2"; echo "name 19 $option2name"; echo "q") | $make_ndx -f $nameprod.gro -n $name1.ndx -o $name1.ndx
+  (echo "$option2"; echo "name 11 $option2name"; echo "q") | $make_ndx -f $nameprod.gro -n $name1.ndx -o $name1.ndx
   # create a index group specific for the structural NADPH+ binding site in G6PD
-  (echo "$option3"; echo "name 20 $option3name"; echo "q") | $make_ndx -f $nameprod.gro -n $name1.ndx -o $name1.ndx
+  (echo "$option3"; echo "name 12 $option3name"; echo "q") | $make_ndx -f $nameprod.gro -n $name1.ndx -o $name1.ndx
 }      
 
 indexCreator_omega() {

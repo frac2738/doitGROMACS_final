@@ -113,7 +113,7 @@ if(is.null(argsL$hm)) print("pes projection file not supplied") else file.heatma
 if(is.null(argsL$o)) print("output not supplied") else output <- argsDF$V2[which(argsDF$V1 == "o")]
 
 if(is.null(argsL$dpi) && is.null(argsL$ht) && is.null(argsL$wt)) { 
-  print("no dimensions set: using standard values (height=7,width=11,dpi=300)") 
+  writeLines("no dimensions set: using standard values (height=7,width=11,dpi=300)") 
   ggheight <- 7
   ggwidth <- 11
   ggdpi <- 300
@@ -137,37 +137,67 @@ locate.funtion.file <- function() {
   source(function.file)
 }
 
+writeLines("Locating files and functions")
+
+testit <- function(x = sort(runif(2)), ...)
+{
+    pb <- txtProgressBar(...)
+    for(i in c(0, x, 1)) {Sys.sleep(0.5); setTxtProgressBar(pb, i)}
+    Sys.sleep(1)
+    close(pb)
+}
+testit(style = 3)
+
 # source all the functions & load the libraries
 locate.funtion.file()
+writeLines("loading libraries (ggplot-gridExtra-grid-reshape)")
+
 library("ggplot2"); library("gridExtra"); library("reshape2"); library("grid")
 
+# plot simulation conditions
+writeLines("Plotting the simulation conditions")
 if (exists("file.potential") && exists("file.temperature") && exists("file.pressure") && exists("file.density") 
       && file.exists(paste(file.potential)) && file.exists(paste(file.temperature)) && file.exists(paste(file.pressure)) 
       && file.exists(paste(file.density))) { 
   editXVGfile(file.potential); editXVGfile(file.temperature); editXVGfile(file.pressure); editXVGfile(file.density)
   output.simcond <- paste0(output,"_simcond.png")
-  gromacsSimCond(file.potential,file.temperature,file.pressure,file.density,output.simcond,ggheight,ggwidth,ggdpi)
+  gheight <- ggheight; gwidth <- ggwidth; gdpi <- ggdpi
+  gheight <- 10; gwidth <- 16; gdpi <- 300
+  gromacsSimCond(file.potential,file.temperature,file.pressure,file.density,output.simcond,gheight,gwidth,gdpi)
 }
 
 # plot rmsd
+writeLines("Plotting the rmsd")
 if(exists("file.rmsd") && file.exists(paste(file.rmsd))) {
   editXVGfile(file.rmsd)
   ggxlab <- grep.labels(file.rmsd)[[1]]; ggylab <- grep.labels(file.rmsd)[[2]]
   ggtitle <- grep.title(file.rmsd)
   output.rmsd <- paste0(output,"_rmsd.png")
-  generalplot(file.rmsd,output.rmsd,ggxlab,ggylab,ggtitle,ggheight,ggwidth,ggdpi)
+  generalplot(file.rmsd,output.rmsd,ggxlab,ggylab,ggheight,ggwidth,ggdpi) #,ggtitle
 }
 
 # plot rgyr
+writeLines("Plotting the radius of gyration")
 if(exists("file.rgyr") && file.exists(paste(file.rgyr))) {
   editXVGfile(file.rgyr)
   ggxlab <- grep.labels(file.rgyr)[[1]]; ggylab <- grep.labels(file.rgyr)[[2]]
   ggtitle <- grep.title(file.rgyr)
   output.rgyr <- paste0(output,"_rgyr.png")
-  generalplot(file.rgyr,output.rgyr,ggxlab,ggylab,ggtitle,ggheight,ggwidth,ggdpi)
+  generalplot(file.rgyr,output.rgyr,ggxlab,ggylab,ggheight,ggwidth,ggdpi) #,ggtitle
+}
+
+# plot rmsf
+writeLines("Plotting the rmsf")
+if (exists("file.rmsf.bb") && exists("file.rmsf.sc") && file.exists(paste(file.rmsf.bb)) && file.exists(paste(file.rmsf.sc))) {
+  editXVGfile(file.rmsf.bb); editXVGfile(file.rmsf.sc)
+  ggxlab <- grep.labels(file.rmsf.bb)[[1]]; ggylab <- grep.labels(file.rmsf.bb)[[2]]
+  ggtitle <- grep.title(file.rmsf.bb)
+  output.rmsf <- paste0(output,"_rmsf.png")
+  gromacsRMSF(file.rmsf.bb,file.rmsf.sc,output.rmsf,ggxlab,ggylab,ggheight,ggwidth,ggdpi) #,ggtitle
 }
 
 # plot ss
+writeLines("Plotting the secondary structure")
 if (exists("file.ss") && file.exists(paste(file.ss))) {
   editXVGfile(file.ss)
   ggxlab <- grep.labels(file.ss)[[1]]; ggylab <- grep.labels(file.ss)[[2]]
@@ -176,18 +206,11 @@ if (exists("file.ss") && file.exists(paste(file.ss))) {
   gromacsSS(file.ss,output.ss,ggxlab,ggylab,ggtitle,ggheight,ggwidth,ggdpi)
 }
 
-# plot rmsf
-if (exists("file.rmsf.bb") && exists("file.rmsf.sc") && file.exists(paste(file.rmsf.bb)) && file.exists(paste(file.rmsf.sc))) {
-  editXVGfile(file.rmsf.bb); editXVGfile(file.rmsf.sc)
-  ggxlab <- grep.labels(file.rmsf.bb)[[1]]; ggylab <- grep.labels(file.rmsf.bb)[[2]]
-  ggtitle <- grep.title(file.rmsf.bb)
-  output.rmsf <- paste0(output,"_rmsf.png")
-  gromacsRMSF(file.rmsf.bb,file.rmsf.sc,output.rmsf,ggxlab,ggylab,ggtitle,ggheight,ggwidth,ggdpi)
-}
-
 # plot heat map
+writeLines("Plotting the PES")
 if (exists("file.heatmap") && file.exists(paste(file.heatmap))) {
   output.pes <- paste0(output,"_pes.png")
   gromacsPES(file.heatmap,output.pes,ggheight,ggwidth,ggdpi)
 }
 
+writeLines("Done....")

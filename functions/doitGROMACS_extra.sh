@@ -22,6 +22,16 @@ mean_multi() {
     grep -v '^#' $i | awk '{total += $3} END {print total/NR}'
     grep -v '^#' $i | awk '{total += $4} END {print total/NR}'
     grep -v '^#' $i | awk '{total += $5} END {print total/NR}'
+    grep -v '^#' $i | awk '{total += $6} END {print total/NR}'
+    grep -v '^#' $i | awk '{total += $7} END {print total/NR}'
+    grep -v '^#' $i | awk '{total += $8} END {print total/NR}'
+    grep -v '^#' $i | awk '{total += $9} END {print total/NR}'
+    grep -v '^#' $i | awk '{total += $10} END {print total/NR}'
+    grep -v '^#' $i | awk '{total += $11} END {print total/NR}'
+    grep -v '^#' $i | awk '{total += $12} END {print total/NR}'
+    grep -v '^#' $i | awk '{total += $13} END {print total/NR}'
+    grep -v '^#' $i | awk '{total += $14} END {print total/NR}'
+    echo "#########################"
   done
 }
 

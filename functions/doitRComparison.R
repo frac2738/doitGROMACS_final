@@ -27,6 +27,8 @@ for (i in 2:length(args)) {
   data.table <- as.data.frame(tmp.table)
 }
 
+data.table
+
 ggxlab <- grep.labels(args[2])[[1]]; ggylab <- grep.labels(args[2])[[2]]
 ggtitle <- grep.title(args[2])
 output <- args[1]

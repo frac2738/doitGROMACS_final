@@ -4,7 +4,7 @@
 #
 #   File:       doitGROMACS.sh          
 #   Version:    V2.1                                                    
-#   Update:     8.Jan.15                                                  
+#   Update:     13.Jun.16                                                  
 #
 #   Copyright:  (c) Francesco Carbone, UCL, 2013-2016
 #   Author:     Francesco Carbone, UCL                                    
@@ -23,22 +23,6 @@
 #   Gromacs (v4.6 and v5). This script is capable to perform energy minimisation
 #   equilibration steps (NVT and NPT) and run some standards analyses on the 
 #   trajectories. 
-#
-#   doitgromacs-v.2.1
-#     |-- doitGROMACS_default.config: file containing user-dependable 
-#     |                               variables used by doitGROMACS.sh. 
-#     |                                .
-#     |-- Makefile: used to add the paths to the required binaries to the 
-#     |             configuration file.
-#     |-- functions
-#       |-- doitGROMACS.sh: main script
-#       |-- doitGROMACS_functions  : file containing all the functions definition
-#       |-- doiRGROMACS.R : R script used by the ggplot function to plot.
-#       |-- doiRfunctions.R : R script containing the functions used by doiRGROMACS.R
-#             
-#   PLANNED UPGRADES: - there is the intention of stop cleaning from the water
-#                       the tpr file. This to allow a better use of the -dump 
-#                       option. 
 #
 #------------------------------------------------------------------------------
 #
@@ -64,7 +48,7 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 FUNCTIONS_BIN="$DIR/functions"
 optionRprog="$FUNCTIONS_BIN/doitRGROMACS.R"
 
-# source all the functions definition
+# source all the functions ifiles
 source $FUNCTIONS_BIN/doitGROMACS_errorsHandling.sh
 source $FUNCTIONS_BIN/doitGROMACS_routines.sh
 source $FUNCTIONS_BIN/doitGROMACS_messages.sh
@@ -90,33 +74,30 @@ while getopts "hgzb:n:t:s:f:c:e:" opt; do
 done
 
 checkFlags
-# check existance of CONFIG_FILE and source it or create a new one
+# check existance of the parameters CONFIG_FILE and source it or create a new one
 export CONFIG_FILE="$(find . -maxdepth 1 -name doitGROMACS.config)"
-# Source configuration file
 if [[ -f $CONFIG_FILE ]]; then
-  . $CONFIG_FILE ;
+  source $CONFIG_FILE 
 else
-  echo "Configuration file not found, a new file will be created";
+  echo "Configuration file not found, a new file will be created"
   cp $DIR/doitGROMACS_default.config ./doitGROMACS.config
-  case $cpu in
-    acrm | emerald | lappy) 
-    make -f $DIR/Makefile $cpu
-    . doitGROMACS.config
-    echo "
------------------------------- executables found ----------------------------
-executables locations specific for $cpu have been written on doitGROMACS.conf
------------------------------------------------------------------------------
-    "	;;
-    *)	
-    make -f $DIR/Makefile standard
-    . doitGROMACS.config
-    echo "
----------------------- no executables found ------------------------
-standard executables locations have been written on doitGROMACS.conf
---------------------------------------------------------------------
-    "	;;
-  esac 
+  source ./doitGROMACS.config
 fi
+
+# check existance of the binary BINARY_FILE and source it or create a new one
+export BINARY_FILE="$(find . -maxdepth 1 -name doitGROMACS_binaries.config)" 
+if [[ -f $BINARY_FILE ]]; then
+  source $BINARY_FILE
+else
+  echo "Binary file not found, a new file will be created"
+  cp $DIR/doitGROMACS_binaries.config . 
+  source ./doitGROMACS_binaries.config
+fi
+groPATH4="groPATH4_${cpu}"; eval groPATH4=\$$groPATH4
+groPATH5="groPATH5_${cpu}"; groPATH5=${!groPATH5}
+REXE="REXE_${cpu}"; REXE=${!REXE}
+RscriptEXE="RscriptEXE_${cpu}"; RscriptEXE=${!RscriptEXE}
+
 # set the gromacs syntax (version 4 or 5)
 setGROMACSbinaries
 # list the options 

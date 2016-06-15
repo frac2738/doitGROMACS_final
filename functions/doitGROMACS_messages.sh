@@ -3,28 +3,25 @@
 helpMessage() {                                                                 
   cat <<EOF                                                                     
                                                                                 
-                        doitGROMACS.sh -  v 2.1                               
+                        doitGROMACS.sh -  v 2.2                               
                                                                                 
     Copyright (c) 2013-2016, Francesco Carbone, University College London (UCL) 
                                                                                 
     This script is designed to automatise the first step of a molecular dynamics
     experiment ( solvation and equilibration) and to run some basic analyses on 
-    the trajectory files (.xtc), using GROMACS tools. This script allow also a  
-    basic analyses of UNRES (coarse grained ff) trajectories (-u).              
-    This script  is written with GROMACS 4.6 in mind and although it should be  
+    the trajectory files (.xtc), using GROMACS tools. 
+    This script was written with GROMACS 4.6 in mind and although it should be  
     compatible with any previous versions, it is advise  to check the  validity 
-    of each commands before the use with an older version.                      
+    of each commands before the use with an older version. 
+    GROMACS 5.X syntax is supported by using the -g flag.                        
                                                                                 
     At every run the scripts checks the existace of a config file located in the
     working directory (doitGROMACS.config). If a config file is not found, the  
     script uses doitGROMACS_default.config as template for a new configuration  
-    file specific for the machine in which the script is run from by adding the 
-    correct path to both gromacs and R. If the machine is not specify with the  
-    "-b" flag, the config filw will contain standard paths.                     
-    NOTE 1: The script recognise four configurations: acrm/emerald/lappy/default.
-            If gromacs or R is installed in a non standard location, the user   
-            have to manually edit the config file to match its system, otherwise
-            doitGROMACS will not find the binaries.                             
+    file. All the binaries (GROMACS, R, catomain,...) are specified in the 
+    file 'doitGROMACS_binaries.config'.                     
+    NOTE 1: The user can decide to use the default setting (-b default), or
+            define its own location in the doitGROMACS_binaries.config file.
                                                                                 
     USAGE:  ./doitGROMACS.sh -h                     -->   HELP                  
             ./doitGROMACS.sh -u                     -->   UNRES analysis        
@@ -40,9 +37,9 @@ helpMessage() {
                                           [ALWAYS REQUIRED in absence of -u]    
     --------------------------------------------------------------------------- 
     -b       string   acrm        Set the location of binaries                  
+                                  default   -> standrad linux machine
                                   acrm      -> Darwin building computer         
                                   emerald   -> Emerald cluster                  
-                                  lappy     -> Personal laptop                  
     -n       int      wt          Set the name                                  
                                                                                 
                                           [OPTIONAL (function dependant)]       
@@ -56,7 +53,7 @@ helpMessage() {
     NOTE 2:  In my simualtions all the output are printed in this format:       
                               NAMErX_TIME                                       
             where  NAME is the name of the mutation ( 306r ), rX is the replica 
-            number (r1,r2,...) and TIME is the simulation time.As a consequence 
+            number (r1,r2,...) and TIME is the simulation time. As a consequence 
             this script takes and process output names in this form.            
                                                                                 
 EOF
@@ -109,16 +106,16 @@ doitOptions() {
                                                                                 
         with TEMP = temperature in Kelvin (310, 400, ...)                       
         The doitGROMACS tarball contains some examples of mdp file that can be  
-        used after editing.                                                     
+        used after proper editing.                                                     
                                                                                 
 EOF
 }
 
 gromacs_ver_mex() {                                                             
   cat <<EOF                                                                     
-                        -----------------------------                           
+                        -------------------------------                           
     ------------------- GROMACS $gromacs_ver syntax will be used -------------------
-                        -----------------------------                           
+                        -------------------------------                           
 EOF
 }
 

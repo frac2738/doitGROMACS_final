@@ -43,12 +43,12 @@
 
 #---------------------------- The program begins here --------------------------
 
-# find from where the script is lunch.
+# find from where the script is lunch and locate all function files.
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 FUNCTIONS_BIN="$DIR/functions"
 optionRprog="$FUNCTIONS_BIN/doitRGROMACS.R"
 
-# source all the functions ifiles
+# source all the functions files
 source $FUNCTIONS_BIN/doitGROMACS_errorsHandling.sh
 source $FUNCTIONS_BIN/doitGROMACS_routines.sh
 source $FUNCTIONS_BIN/doitGROMACS_messages.sh
@@ -73,8 +73,9 @@ while getopts "hgzb:n:t:s:f:c:e:" opt; do
  esac
 done
 
-checkFlags
-# check existance of the parameters CONFIG_FILE and source it or create a new one
+checkFlags    # check if -b and -n flags are set
+
+# source the config file
 export CONFIG_FILE="$(find . -maxdepth 1 -name doitGROMACS.config)"
 if [[ -f $CONFIG_FILE ]]; then
   source $CONFIG_FILE 
@@ -84,7 +85,7 @@ else
   source ./doitGROMACS.config
 fi
 
-# check existance of the binary BINARY_FILE and source it or create a new one
+# source the binary file
 export BINARY_FILE="$(find . -maxdepth 1 -name doitGROMACS_binaries.config)" 
 if [[ -f $BINARY_FILE ]]; then
   source $BINARY_FILE
@@ -93,17 +94,16 @@ else
   cp $DIR/doitGROMACS_binaries.config . 
   source ./doitGROMACS_binaries.config
 fi
+
+# define gromacs and R binaries
 groPATH4="groPATH4_${cpu}"; eval groPATH4=\$$groPATH4
 groPATH5="groPATH5_${cpu}"; groPATH5=${!groPATH5}
 REXE="REXE_${cpu}"; REXE=${!REXE}
 RscriptEXE="RscriptEXE_${cpu}"; RscriptEXE=${!RscriptEXE}
 
-# set the gromacs syntax (version 4 or 5)
-setGROMACSbinaries
-# list the options 
-doitOptions
-# check the existance of the selected option 
-read -e -p "execute option  " choice
+setGROMACSbinaries  # set the gromacs syntax (version 4 or 5)
+doitOptions         # list the options
+read -e -p "Select an option: " choice
 case $choice in
   all|emin|nvt|npt|h20|cond|rmsdfg|cluster|pca|sas|sas-sites|dssp|contact|hb|hb-sites|ggplot|ggplot-bis|indexCreator|modvim+|mean|mean_multi|omega)
     if [ -z ${timens} ]; then
